@@ -1,0 +1,160 @@
+<!-- 
+	AscendantXHairs strings
+	One of the Crosshairs is The Man in the Box.
+-->
+
+<string_table>
+	<string id="ui_mm_menu_custom_crosshair">
+		<text>AscendantXHairs</text>
+	</string>
+	<string id="ui_mm_title_custom_crosshair">
+		<text>AscendantXHairs Options</text>
+	</string>
+	<string id="ui_mm_lst_same_as_main">
+		<text>Same as Holstered</text>
+	</string>
+
+
+
+	<string id="ui_mm_video_custom_crosshair_customcrosshair">
+		<text>Enable Custom Crosshair</text>
+	</string>
+	
+	<string id="ui_mm_video_custom_crosshair_customcrosshair_desc">
+		<text>Without this, none of the options below do anything and the mod is disabled. 
+		
+		NOTE: Custom Crosshairs are also affected by the Crosshair options in "UI/HUD".</text>
+	</string>
+	
+	<string id="ui_mm_video_custom_crosshair_ignorgamecrosshairsetting">
+		<text>Ignore game Crosshair Visibility</text>
+	</string>
+
+	<string id="ui_mm_video_custom_crosshair_ignorgamecrosshairsetting_desc">
+		<text>When checked, Custom Crosshairs will not be hidden when the game crosshair is disabled.
+		
+		This will make it ignore Crosshair Console Commands and make it incompatible with the mod "3DPDA Crosshair Hide".</text>
+	</string>
+	
+	<string id="ui_mm_video_custom_crosshair_maincrosshair">
+		<text>Holster Crosshair</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_maincrosshair_desc">
+		<text>This is the Crosshair that will appear when your weapon is holstered.</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairnoweapon">
+		<text>Holster Crosshair Enable</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairnoweapon_desc">
+		<text>Enables/Disables the Holster Crosshair. The Holster Crosshair will appear when you have your weapon holstered.</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairnoweapondynamic">
+		<text>Dynamic Holster Crosshair</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairnoweapondynamic_desc">
+		<text>Makes it so the Holster Crosshair changes in size by distance.</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairscale">
+		<text>Holster Crosshair Size</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairscale_desc">
+		<text>Default is 50. Changes the current size of the Holster Crosshair.</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairweapontexture">
+		<text>Weapon Crosshair</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairweapontexture_desc">
+		<text>Selects a different Crosshair to be used when holding a weapon.</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairweapon">
+		<text>Weapon Crosshair Toggle</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairweapon_desc">
+		<text>Enables/Disables the Weapon Crosshair. The Weapon Crosshair will appear when you have your weapon unholstered.</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairweapondynamic">
+		<text>Dynamic Weapon Crosshair</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairweapondynamic_desc">
+		<text>Makes it so the Weapon Crosshair changes in size by distance.</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairscale_weapon">
+		<text>Weapon Crosshair Size</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairscale_weapon_desc">
+		<text>Default is 50. Changes the current size of the Weapon Crosshair.</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairaimtexture">
+		<text>Aim Crosshair</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairaimtexture_desc">
+		<text>Selects a different Crosshair to be used for the Aim Crosshair.</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairaim">
+		<text>Aim Crosshair Enable</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairscope">
+		<text>Aim Crosshair Enabled with scopes</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairscope_desc">
+		<text>Aim crosshair will be shown when zooming with a scope.</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairaim_desc">
+		<text>Enables/Disables the Aim Crosshair. The Aim Crosshair will appear when you use ironsights.</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairaimdynamic">
+		<text>Dynamic Aim Crosshair</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairaimdynamic_desc">
+		<text>Makes it so the Aim Crosshair changes in size by distance.</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairscale_aim">
+		<text>Aim Crosshair Size</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairscale_aim_desc">
+		<text>Default is 50. Changes the current size of the Aim Crosshair.</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_colorblindmode">
+		<text>Color Blind Mode</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_colorblindmode_desc">
+		<text>Enable a change in crosshair shape instead of color to show target hostility.</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_enemycrosshair">
+		<text>Crosshair for Enemies</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_enemycrosshair_desc">
+		<text>Crosshair to be shown when target is an enemy.</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairscale_enemy">
+		<text>Crosshair for Enemies Scale</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairscale_enemy_desc">
+		<text>Default is 50. Changes the current size of the Enemy Crosshair.</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_neutralcrosshair">
+		<text>Crosshair for Neutrals</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_neutralcrosshair_desc">
+		<text>Crosshair to be shown when target is a neutral.</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairscale_neutral">
+		<text>Crosshair for Neutrals Scale</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairscale_neutral_desc">
+		<text>Default is 50. Changes the current size of the Neutral Crosshair.</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_friendcrosshair">
+		<text>Crosshair for Friendlies</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_friendcrosshair_desc">
+		<text>Crosshair to be shown when target is a friendly.</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairscale_friend">
+		<text>Crosshair for Friendlies Scale</text>
+	</string>
+	<string id="ui_mm_video_custom_crosshair_crosshairscale_friend_desc">
+		<text>Default is 50. Changes the current size of the Friendly Crosshair.</text>
+	</string>
+
+</string_table>

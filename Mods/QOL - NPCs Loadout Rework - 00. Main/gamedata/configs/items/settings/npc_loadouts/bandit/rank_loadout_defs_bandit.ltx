@@ -1,0 +1,29 @@
+[bandit_novice]
+primary = bandit_novice_primary
+;secondary = bandit_experienced_secondary
+
+[bandit_trainee]:bandit_novice
+primary = bandit_trainee_primary
+
+[bandit_experienced]:bandit_trainee
+primary = bandit_experienced_primary
+secondary = bandit_experienced_secondary
+
+[bandit_professional]:bandit_experienced
+primary = bandit_professional_primary
+
+[bandit_veteran]:bandit_professional
+primary = bandit_veteran_primary
+secondary = bandit_veteran_secondary
+
+[bandit_expert]:bandit_veteran
+primary = bandit_expert_primary
+
+[bandit_master]:bandit_expert
+primary = bandit_master_primary
+secondary = bandit_master_secondary
+
+[bandit_legend]:bandit_master
+primary = bandit_legend_primary
+
+#include "loadout_*.ltx"

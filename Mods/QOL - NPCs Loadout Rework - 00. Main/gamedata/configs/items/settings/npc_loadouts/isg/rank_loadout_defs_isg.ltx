@@ -1,0 +1,30 @@
+#include "loadout_*.ltx"
+
+[isg_novice]
+primary = isg_novice_primary
+;secondary = isg_secondary
+
+[isg_trainee]:isg_novice
+primary = isg_trainee_primary
+
+[isg_experienced]:isg_trainee
+primary = isg_experienced_primary
+secondary = isg_secondary
+
+[isg_professional]:isg_experienced
+primary = isg_professional_primary
+
+[isg_veteran]:isg_professional
+primary = isg_veteran_primary
+secondary = isg_veteran_secondary
+
+[isg_expert]:isg_veteran
+primary = isg_expert_primary
+
+[isg_master]:isg_expert
+primary = isg_master_primary
+secondary = isg_master_secondary
+
+[isg_legend]:isg_master
+primary = isg_legend_primary
+secondary = isg_master_secondary

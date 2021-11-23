@@ -1,0 +1,29 @@
+[ecolog_novice]
+primary = ecolog_novice_primary
+secondary = ecolog_novice_secondary
+
+[ecolog_trainee]:ecolog_novice
+primary = ecolog_trainee_primary
+
+[ecolog_experienced]:ecolog_trainee
+primary = ecolog_experienced_primary
+secondary = ecolog_experienced_secondary
+
+[ecolog_professional]:ecolog_experienced
+primary = ecolog_professional_primary
+
+[ecolog_veteran]:ecolog_professional
+primary = ecolog_veteran_primary
+secondary = ecolog_veteran_secondary
+
+[ecolog_expert]:ecolog_veteran
+primary = ecolog_expert_primary
+
+[ecolog_master]:ecolog_expert
+primary = ecolog_master_primary
+secondary = ecolog_master_secondary
+
+[ecolog_legend]:ecolog_master
+primary = ecolog_legend_primary
+
+#include "loadout_*.ltx"

@@ -1,0 +1,64 @@
+-- default option values
+bs_delay = 60*60*24 						-- minimum in-game seconds in-between potential bounty squad spawns
+bs_delay_spawn = 300						-- how long (real-time seconds) the player has to be within linked-level range of hostile territory before considering spawning a bounty squad
+bs_delay_state = 60							-- real-time seconds in-between updates to the bounty squad(s) target
+bs_base_spawn_chance = 5					-- base chance for a bounty squad to spawn on a given update, which occurs every 'delay' seconds in-game time
+bs_spawn_mult_attacked_increment = 0.5		-- if the player kills an NPC of a faction, that faction is much more likely to spawn bounty squads targeting them. The multiplier will increase by this much per killed NPC
+
+function on_game_start()
+	RegisterScriptCallback("on_option_change", loadsettings)  --MCM sends the same callback as ui_options 
+	loadsettings()
+end
+
+function loadsettings()
+	if ui_mcm then -- here we test to make sure ui_mcm exists before trying to call it's get function.
+		bs_delay = 60*60 * ui_mcm.get("bountysquads/delay")			-- setting is in hours, convert to seconds
+		bs_delay_spawn = ui_mcm.get("bountysquads/delay_spawn")
+		bs_delay_state = ui_mcm.get("bountysquads/delay_state")
+		bs_base_spawn_chance = ui_mcm.get("bountysquads/base_spawn_chance")
+		bs_spawn_mult_attacked_increment = ui_mcm.get("bountysquads/spawn_mult_attacked_increment")
+	end
+end
+
+function on_mcm_load()
+	local ui_categories = {}
+	local tble = {
+					{ id= "slide_bountysquads"		,type= "slide"	  ,link= "ui_options_slider_disguise"	 ,text= "ui_mcm_title_bountysquads"		,size= {512,50}		,spacing= 20 },
+					
+					{ id= "delay"    	 	 		        ,type= "track"    ,val= 2	,def= 24	  ,min= 0     ,max= 200	      ,step= 1  	        },
+					{ id= "delay_spawn"    	 	 		    ,type= "track"    ,val= 2	,def= 300	  ,min= 0     ,max= 1000      ,step= 10  	        },
+					{ id= "delay_state"    	 	 		    ,type= "track"    ,val= 2	,def= 60	  ,min= 0     ,max= 200       ,step= 10  	        },
+					{ id= "base_spawn_chance"    	 	 	,type= "track"    ,val= 2	,def= 5	  	  ,min= 0     ,max= 100       ,step= 1  	        },
+					{ id= "spawn_mult_attacked_increment"   ,type= "track"    ,val= 2	,def= 0.5	  ,min= 0     ,max= 3         ,step= 0.1  	        },
+					{ id= "line" ,type= "line" },
+				}
+	
+--[[
+	local ini_bounty_squad = ini_file("plugins\\bounty_squad.ltx")
+	local n = 0
+	
+	n = ini_bounty_squad:line_count("danger_ranks")
+	for i=0,n-1 do
+		local result, name, value	= ini_bounty_squad:r_line_ex("danger_ranks",i,"","")
+		if name and value then
+			ui_categories[name] = tonumber(value) or 0
+			table.insert( tble, {id = name, type = "input", val = 2, def = ui_categories[name], min = 0, max = 10)
+		end
+	end
+	
+	table.insert( tble, {id = "line", type = "line")
+	
+	n = ini_bounty_squad:line_count("danger_reputations")
+	for i=0,n-1 do
+		local result, name, value	= ini_bounty_squad:r_line_ex("danger_reputations",i,"","")
+		if name and value then
+			ui_categories[name] = tonumber(value) or 0
+			table.insert( tble, {id = name, type = "input", val = 2, def = ui_categories[name], min = 0, max = 10)
+		end
+	end
+--]]
+
+	op = { id= "bountysquads"      	 	,sh=true ,gr=tble}
+	
+	return op
+end

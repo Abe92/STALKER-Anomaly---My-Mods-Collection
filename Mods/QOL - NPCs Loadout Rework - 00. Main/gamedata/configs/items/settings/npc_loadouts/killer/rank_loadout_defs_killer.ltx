@@ -1,0 +1,29 @@
+[killer_novice]
+primary = killer_novice_primary
+secondary = killer_novice_secondary
+
+[killer_trainee]:killer_novice
+primary = killer_trainee_primary
+
+[killer_experienced]:killer_trainee
+primary = killer_experienced_primary
+secondary = killer_experienced_secondary
+
+[killer_professional]:killer_experienced
+primary = killer_professional_primary
+
+[killer_veteran]:killer_professional
+primary = killer_veteran_primary
+secondary = killer_veteran_secondary
+
+[killer_expert]:killer_veteran
+primary = killer_expert_primary
+
+[killer_master]:killer_expert
+primary = killer_master_primary
+secondary = killer_master_secondary
+
+[killer_legend]:killer_master
+primary = killer_legend_primary
+
+#include "loadout_*.ltx"
