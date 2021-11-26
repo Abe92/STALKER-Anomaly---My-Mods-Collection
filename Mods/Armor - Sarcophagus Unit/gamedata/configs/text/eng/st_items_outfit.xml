@@ -1553,6 +1553,14 @@
 		</text>
 	</string>
 
+	<string id="ecolog_exo_outfit_name_1">
+		<text>Scientific "Sarcophagus" exoskeleton</text>
+	</string>
+	<string id="ecolog_exo_outfit_description_1">
+		<text>%c[ui_gray_1]An official version of the military exoskeleton, intended for use by the Ecologists' guards. The suit feels almost impervious to small arms, and its advanced servomotors make it an excellent choice for those in entrenched defensive positions, as it greatly aids in the use of heavy defensive weaponry. When out in the field, wearers of this suit are more commonly used to carrying the ludicrous amount of batteries, LLMCs, AAMs and other supplies an accompanying scientist might need when exploring the Zone.\n \n
+		</text>
+	</string>
+
 	<string id="renegade_exo_outfit_name">
 		<text>Renegade exoskeleton</text>
 	</string>

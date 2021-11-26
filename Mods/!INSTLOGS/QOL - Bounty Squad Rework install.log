@@ -1,0 +1,6 @@
+\Changelog.txt
+gamedata\configs\plugins\bounty_squad.ltx
+gamedata\configs\text\eng\ui_st_bountysquads.xml
+gamedata\configs\text\rus\ui_st_bountysquads.xml
+gamedata\scripts\bountysquads_mcm.script
+gamedata\scripts\sim_squad_bounty.script

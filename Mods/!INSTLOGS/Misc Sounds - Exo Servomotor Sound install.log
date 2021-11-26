@@ -1,0 +1,17 @@
+gamedata\configs\text\eng\ui_mcm_haruka_exo_servo_sounds.xml
+gamedata\configs\text\rus\ui_mcm_haruka_exo_servo_sounds.xml
+gamedata\scripts\exo_servo_sounds.script
+gamedata\scripts\exo_servo_sounds_mcm.script
+NEWFLDR|gamedata\sounds\exo-servo\
+gamedata\sounds\exo-servo\heavy_servo_exo_jump.ogg
+gamedata\sounds\exo-servo\heavy_servo_exo_landing.ogg
+gamedata\sounds\exo-servo\heavy_servo_exo_walk1.ogg
+gamedata\sounds\exo-servo\heavy_servo_exo_walk2.ogg
+gamedata\sounds\exo-servo\light_servo_exo_jump.ogg
+gamedata\sounds\exo-servo\light_servo_exo_landing.ogg
+gamedata\sounds\exo-servo\light_servo_exo_walk1.ogg
+gamedata\sounds\exo-servo\light_servo_exo_walk2.ogg
+gamedata\sounds\exo-servo\middle_servo_exo_jump.ogg
+gamedata\sounds\exo-servo\middle_servo_exo_landing.ogg
+gamedata\sounds\exo-servo\middle_servo_exo_walk1.ogg
+gamedata\sounds\exo-servo\middle_servo_exo_walk2.ogg

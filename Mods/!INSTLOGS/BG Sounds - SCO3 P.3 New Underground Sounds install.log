@@ -1,0 +1,9 @@
+gamedata\configs\environment\ambient_channels\backgrounds.ltx
+gamedata\configs\environment\ambients\presets\environment_underground.ltx
+gamedata\configs\environment\ambients\presets\environment_underground_more.ltx
+gamedata\configs\environment\ambients\presets\environment_underground_x18.ltx
+gamedata\sounds\ambient\fan_squeaks_1.ogg
+gamedata\sounds\ambient\lamp_squeaks_1.ogg
+gamedata\sounds\ambient\lamp_squeaks_2.ogg
+NEWFLDR|gamedata\sounds\ambient\underground\
+gamedata\sounds\ambient\underground\steam_1.ogg

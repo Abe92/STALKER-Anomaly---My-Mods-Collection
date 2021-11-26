@@ -1,0 +1,16 @@
+gamedata\particles.xr
+gamedata\configs\items\items\items_explosives.ltx
+gamedata\configs\items\items\items_explosives_new_mines.ltx
+gamedata\configs\items\weapons\base.ltx
+gamedata\configs\items\weapons\m_f1.ltx
+gamedata\configs\items\weapons\m_gd5.ltx
+gamedata\configs\items\weapons\m_gsmoke.ltx
+gamedata\configs\items\weapons\m_rgd5.ltx
+gamedata\configs\items\weapons\w_rpg7.ltx
+NEWFLDR|gamedata\textures\ayykyu_fx\
+gamedata\textures\ayykyu_fx\pfx_bloodsplash1.dds
+gamedata\textures\ayykyu_fx\pfx_bloodsplash1.thm
+gamedata\textures\ayykyu_fx\pfx_bloodsplash2.dds
+gamedata\textures\ayykyu_fx\pfx_bloodsplash3.dds
+gamedata\textures\ayykyu_fx\pfx_smoke_b.dds
+gamedata\textures\ayykyu_fx\pfx_smoke_b.thm
