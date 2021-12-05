@@ -1032,6 +1032,14 @@
 		<text>%c[ui_gray_1]Produced by Freedom craftsmen especially for observing anomalous phenomena in the Zone. The closed system of breathing and special treatment materials provide excellent protection against harmful radiation and anomalous effects. However, the built-in "Sentinel" body armour isn’t the best and can break somewhat easily, so is not suitable for active hostilities.\n \n
 		</text>
 	</string>
+	
+	<string id="svoboda_scientific_outfit_name_1">
+		<text>Watchman of Freedom "Sarcophagus"</text>
+	</string>
+	<string id="svoboda_scientific_outfit_description_1">
+		<text>%c[ui_gray_1]Produced by Freedom craftsmen especially for observing anomalous phenomena in the Zone. The closed system of breathing and special treatment materials provide excellent protection against harmful radiation and anomalous effects. \n \n
+		</text>
+	</string>
 
 	<string id="monolith_scientific_outfit_name">
 		<text>Monolith scientific suit</text>
@@ -1041,14 +1049,6 @@
 		</text>
 	</string>
 
-	<string id="monolith_scientific_outfit_name_1">
-		<text>Monolith "Sarcophagus" scientific suit</text>
-	</string>
-	<string id="monolith_scientific_outfit_description_1">
-		<text>%c[ui_gray_1]The Monolith light scientific suit includes a flak vest of unknown origin and also features unique modifications for greater resistance to radiation. The anomaly protection system otherwise matches the SEVA bodysuit. Curiously, according to some legends, these suits are most often worn by the soldiers who defend the Brain Scorcher in Radar, although no one outside the Monolith faction can easily confirm.\n \n
-		</text>
-	</string>
-	
 	<string id="cs_scientific_outfit_name">
 		<text>CS-4a SEVA suit</text>
 	</string>
@@ -1129,6 +1129,14 @@
 		</text>
 	</string>
 	
+	<string id="dolg_scientific_wood_outfit_name_1">
+		<text>PS5-9Md "Sarcophagus" pathfinder</text>
+	</string>
+	<string id="dolg_scientific_wood_outfit_description_1">
+		<text>%c[ui_gray_1]As a token of goodwill (and to help cover their research costs), Clear Sky occasionally makes coveted "pathfinder" suits on commission for use among the Duty faction. Altered according to Duty's needs, this suit has a few differences compared to the CS-4a pathfinder. Namely, radiological protection atrophies for a focus on defence from chemical weapons, electrical insulation is neglected for thermal retardation, and protection from blunt trauma is lowered in favour of greater safety from lacerations. Overall, an excellent and comfortable outfit for Duty's more curious members.\n \n
+		</text>
+	</string>
+	
 	<string id="bandit_scientific_dark_outfit_name">
 		<text>Patchwork closed cycle apparatus</text>
 	</string>
@@ -1191,6 +1199,14 @@
 		<text>SSP-99M suit</text>
 	</string>
 	<string id="st_ecologist_outfit_grn_description">
+		<text>%c[ui_gray_1]High quality modified SSP-99 suit. It provides increased body protection from bullet and splinter damage. It is designed for the guards working with scientific expeditions. It provides good protection from radiation and biological anomalies. It is resistant to chemically aggressive environments and other effects dangerous to the body.\n \n
+		</text>
+	</string>
+	
+	<string id="st_ecologist_outfit_grn_name_1">
+		<text>"Sarcophagus" SSP-99M suit</text>
+	</string>
+	<string id="st_ecologist_outfit_grn_description_1">
 		<text>%c[ui_gray_1]High quality modified SSP-99 suit. It provides increased body protection from bullet and splinter damage. It is designed for the guards working with scientific expeditions. It provides good protection from radiation and biological anomalies. It is resistant to chemically aggressive environments and other effects dangerous to the body.\n \n
 		</text>
 	</string>
@@ -1306,6 +1322,14 @@
 	</string>
 	<string id="exo_wood_outfit_description">
 		<text>The "underwear" of an exoskeleton, sometimes mistakenly known as the "Radsuit". This outfit provides almost all the protection one can expect from a full exoskeleton, but due to being stripped of its servos and batteries, it provides none of the strength enhancement. On the positive side, this means the suit is now easier to maintain and, unlike a full exoskeleton, does not prevent the wearer from sprinting. Compared to a standard exosuit, it gives up some combat resistances for greater protection from the environment.\n \n
+		</text>
+	</string>
+	
+	<string id="exo_wood_outfit_name_1">
+		<text>"Sarcophagus" exosuit</text>
+	</string>
+	<string id="exo_wood_outfit_description_1">
+		<text>The "underwear" of an exoskeleton, sometimes mistakenly known as the "Radsuit". This outfit provides almost all the protection one can expect from a full exoskeleton, but due to being stripped of its servos and batteries, it provides none of the strength enhancement. On the positive side, this means the suit is now easier to maintain and, unlike a full exoskeleton, does not prevent the wearer from sprinting. Consists of an integrated tactical helmet, a heavy armoured vest and a reinforced environmental jumpsuit.\n \n
 		</text>
 	</string>
 	
@@ -1473,14 +1497,6 @@
 		</text>
 	</string>
 	
-	<string id="exo_outfit_name_1">
-		<text>"Sarcophagus" Exoskeleton</text>
-	</string>
-	<string id="exo_outfit_description_1">
-		<text>%c[ui_gray_1]High-tech light armour, made on the basis of a military exoskeleton. However, study samples have revealed that its servos are made of alloys and materials unknown to any field of science in any other part of the world. Consists of a three-part exosuit (tactical helmet, tactical vest and an anti-ballistic environmental jumpsuit) fitted with modern, if somewhat alien, powered servos.\n \n
-		</text>
-	</string>
-
 	<string id="dolg_exo_outfit_name">
 		<text>PSZ-10d exoskeleton</text>
 	</string>
@@ -1553,14 +1569,6 @@
 		</text>
 	</string>
 
-	<string id="ecolog_exo_outfit_name_1">
-		<text>Scientific "Sarcophagus" exoskeleton</text>
-	</string>
-	<string id="ecolog_exo_outfit_description_1">
-		<text>%c[ui_gray_1]An official version of the military exoskeleton, intended for use by the Ecologists' guards. The suit feels almost impervious to small arms, and its advanced servomotors make it an excellent choice for those in entrenched defensive positions, as it greatly aids in the use of heavy defensive weaponry. When out in the field, wearers of this suit are more commonly used to carrying the ludicrous amount of batteries, LLMCs, AAMs and other supplies an accompanying scientist might need when exploring the Zone.\n \n
-		</text>
-	</string>
-
 	<string id="renegade_exo_outfit_name">
 		<text>Renegade exoskeleton</text>
 	</string>
@@ -1608,10 +1616,6 @@
 	
 	<string id="nosorog_outfit_description">
 		<text>%c[ui_gray_1]A next generation exoskeleton, consisting of a doubly reinforced exosuit and an armoured Czech-M10 gas mask. This suit is rumoured to have been the brainchild of a now deceased stalker named "Fang", whose designs were later claimed by all sorts of powerful factions across the Zone. If regular exoskeletons allow stalkers to feel like a light vehicle, the Nosorog almost makes them believe they're a main battle tank, able to withstand incredible punishment while carrying tremendous ordnance. Typically only available to a faction's most valuable members, and even then only during exceptionally dangerous missions.\n \n
-		</text>
-	</string>
-	<string id="nosorog_outfit_description_1">
-		<text>%c[ui_gray_1]A next generation exoskeleton, consisting of a doubly reinforced lighter exosuit and an armoured Czech-M10 gas mask. This suit is rumoured to have been the brainchild of a now deceased stalker named "Fang", whose designs were later claimed by all sorts of powerful factions across the Zone. If regular exoskeletons allow stalkers to feel like a light vehicle, the Nosorog almost makes them believe they're a main battle tank, able to withstand incredible punishment while carrying tremendous ordnance. Typically only available to a faction's most valuable members, and even then only during exceptionally dangerous missions.\n \n
 		</text>
 	</string>
 	

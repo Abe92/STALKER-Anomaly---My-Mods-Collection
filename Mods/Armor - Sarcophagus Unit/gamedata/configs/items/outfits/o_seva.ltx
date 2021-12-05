@@ -1063,10 +1063,10 @@
 		$spawn                        = "outfit\scientific_outfit"
 		class                         = EQU_STLK
 		ef_equipment_type             = 2
-		visual                        = dynamics\outfit\monolith_scientific_outfit
-		actor_visual                  = actors\stalker_monolith\stalker_monolith_1.ogf
-		npc_visual                    = actors\stalker_monolith\stalker_monolith_1.ogf
-		player_hud_section            = actor_hud_monolith_seva
+		visual                        = dynamics\outfit\scientific_outfit
+		actor_visual                  = actors\stalker_neutral\stalker_neutral_nauchniy.ogf
+		npc_visual                    = actors\stalker_neutral\stalker_neutral_nauchniy.ogf
+		player_hud_section            = actor_hud_loner_seva
 		character_portrait            = ui_inGame2_neutral_nauchniy
 		full_icon_name                = npc_icon_scientific_outfit
 		full_scale_icon               = 12, 11
@@ -1075,39 +1075,39 @@
 		inv_name_short                = scientific_outfit_name_1
 		description                   = scientific_outfit_description_1
 		inv_grid_x                    = 108
-		inv_grid_y                    = 30
-		upgr_icon_x                   = 716
-		upgr_icon_y                   = 824
-		upgr_icon_width               = 198
-		upgr_icon_height              = 129
-		upgrades                      = up_gr_firstab_seva_1, up_gr_seconab_seva_1, up_gr_thirdab_seva_1, up_gr_fourtab_seva_1
+		inv_grid_y                    = 0
+		upgr_icon_x                   = 3130
+		upgr_icon_y                   = 192
+		upgr_icon_width               = 298
+		upgr_icon_height              = 166
+		upgrades                      = up_gr_firstab_seva_1, up_gr_seconab_seva_1, up_gr_thirdab_seva_2, up_gr_fourtab_seva_2
 		installed_upgrades            =
 		upgrade_scheme                = up_scheme_seva_1
         
 		community                     = stalker
 		kind                          = o_sci
-		cost                          = 125000
+		cost                          = 105000
 		inv_weight                    = 5.5
-		additional_inventory_weight   = 20
-		additional_inventory_weight2  = 20
+		additional_inventory_weight   = 21.5
+		additional_inventory_weight2  = 21.5
 		artefact_count                = 3
 		immunities_sect               = sect_scientific_outfit_immunities_1
 		repair_type                   = outfit_medium
 		;repair_part_bonus             = 0.35
-		hit_fraction_actor            = 0.32
-		bones_koeff_protection        = actor_armor_exo
+		hit_fraction_actor            = 0.00000000000000035
+		bones_koeff_protection        = actor_armor_radiation
 		control_inertion_factor       = 1.33
 		power_loss                    = 0.05
         
-		burn_protection               = 0.14
-		shock_protection              = 1.7
-		radiation_protection          = 0.032
-		chemical_burn_protection      = 0.11
-		telepatic_protection          = 0.135
-		strike_protection             = 0.38
-		explosion_protection          = 0.45
-		wound_protection              = 0.75
-		fire_wound_protection         = 0.45
+		burn_protection               = 0.43
+		shock_protection              = 2.1
+		radiation_protection          = 0.035
+		chemical_burn_protection      = 0.155
+		telepatic_protection          = 0.145
+		strike_protection             = 0.61
+		explosion_protection          = 0.50
+		wound_protection              = 1.28
+		fire_wound_protection         = 0.86
 		
 [sect_scientific_outfit_immunities_1]
 		burn_immunity                 = 0.00000025
@@ -1123,14 +1123,14 @@
 ;--------------------------------------------------------------------------
 
 [merc_ace_outfit_1]:outfit_base,outfit_restrictions_1
-		$spawn                        = "outfit\scientific_outfit"
+		$spawn                        =
 		class                         = EQU_STLK
 		ef_equipment_type             = 2
-		visual                        = dynamics\outfit\monolith_scientific_outfit
-		actor_visual                  = actors\stalker_monolith\stalker_monolith_1.ogf
-		npc_visual                    = actors\stalker_monolith\stalker_monolith_1.ogf
-		player_hud_section            = actor_hud_monolith_seva
-		character_portrait            = ui_inGame2_neutral_nauchniy
+		visual                        = dynamics\outfit\scientific_outfit
+		actor_visual                  = actors\stalker_merc\stalker_mercenary3.ogf
+		npc_visual                    = actors\stalker_merc\stalker_mercenary3.ogf
+		player_hud_section            = actor_hud_loner_seva
+		character_portrait            = ui_inGame2_ace
 		full_icon_name                = npc_icon_scientific_outfit
 		full_scale_icon               = 12, 11
         
@@ -1138,39 +1138,39 @@
 		inv_name_short                = ace_outfit_name_1
 		description                   = ace_outfit_description_1
 		inv_grid_x                    = 108
-		inv_grid_y                    = 30
+		inv_grid_y                    = 36
 		upgr_icon_x                   = 716
 		upgr_icon_y                   = 824
 		upgr_icon_width               = 198
 		upgr_icon_height              = 129
-		upgrades                      = up_gr_firstab_seva_1, up_gr_seconab_seva_1, up_gr_thirdab_seva_1, up_gr_fourtab_seva_1
+		upgrades                      = up_gr_firstab_seva_1, up_gr_seconab_seva_1, up_gr_thirdab_seva_2, up_gr_fourtab_seva_2
 		installed_upgrades            =
 		upgrade_scheme                = up_scheme_seva_1
         
 		community                     = killer
 		kind                          = o_sci
-		cost                          = 130000
+		cost                          = 150000
 		inv_weight                    = 5.5
-		additional_inventory_weight   = 24.5
-		additional_inventory_weight2  = 24.5
+		additional_inventory_weight   = 28.5
+		additional_inventory_weight2  = 28.5
 		artefact_count                = 3
 		immunities_sect               = sect_ace_outfit_immunities_1
 		repair_type                   = outfit_heavy
 		;repair_part_bonus             = 0.50
-		hit_fraction_actor            = 0.30
-		bones_koeff_protection        = actor_armor_exo
+		hit_fraction_actor            = 0.00000000000000025
+		bones_koeff_protection        = actor_armor_class5
 		control_inertion_factor       = 1.33
 		power_loss                    = 0.05
         
-		burn_protection               = 0.66
-		shock_protection              = 2.6
-		radiation_protection          = 0.033
-		chemical_burn_protection      = 0.187
-		telepatic_protection          = 0.145
-		strike_protection             = 0.40
-		explosion_protection          = 0.50
-		wound_protection              = 0.85
-		fire_wound_protection         = 0.50
+		burn_protection               = 0.67
+		shock_protection              = 2.7
+		radiation_protection          = 0.039
+		chemical_burn_protection      = 0.197
+		telepatic_protection          = 0.155
+		strike_protection             = 0.63
+		explosion_protection          = 0.55
+		wound_protection              = 1.32
+		fire_wound_protection         = 1.10
 
 [sect_ace_outfit_immunities_1]
 		burn_immunity                 = 0.00000025
@@ -1186,14 +1186,14 @@
 ;--------------------------------------------------------------------------
 
 [cs_scientific_outfit_good_1]:outfit_base,outfit_restrictions_1
-		$spawn                        = "outfit\scientific_outfit"
+		$spawn                        = "outfit\cs_scientific_outfit_good"
 		class                         = EQU_STLK
 		ef_equipment_type             = 2
-		visual                        = dynamics\outfit\monolith_scientific_outfit
-		actor_visual                  = actors\stalker_monolith\stalker_monolith_1.ogf
-		npc_visual                    = actors\stalker_monolith\stalker_monolith_1.ogf
-		player_hud_section            = actor_hud_monolith_seva
-		character_portrait            = ui_inGame2_neutral_nauchniy
+		visual                        = dynamics\outfit\cs_scientific_outfit
+		actor_visual                  = actors\stalker_nebo\stalker_nebo_seva_2.ogf
+		npc_visual                    = actors\stalker_nebo\stalker_nebo_seva_2.ogf
+		player_hud_section            = actor_hud_loner_seva
+		character_portrait            = ui_inGame2_csky_nauchniy
 		full_icon_name                = npc_icon_scientific_outfit
 		full_scale_icon               = 12, 11
         
@@ -1201,39 +1201,39 @@
 		inv_name_short                = cs_scientific_outfit_good_name_1
 		description                   = cs_scientific_outfit_good_description_1
 		inv_grid_x                    = 108
-		inv_grid_y                    = 30
-		upgr_icon_x                   = 716
-		upgr_icon_y                   = 824
-		upgr_icon_width               = 198
-		upgr_icon_height              = 129
+		inv_grid_y                    = 21
+		upgr_icon_x                   = 3452
+		upgr_icon_y                   = 1038
+		upgr_icon_width               = 291
+		upgr_icon_height              = 164
 		upgrades                      = up_gr_firstab_seva_2, up_gr_seconab_seva_2, up_gr_thirdab_seva_2, up_gr_fourtab_seva_2
 		installed_upgrades            =
 		upgrade_scheme                = up_scheme_seva_1
         
 		community                     = csky
 		kind                          = o_sci
-		cost                          = 120400
+		cost                          = 125000
 		inv_weight                    = 5.5
-		additional_inventory_weight   = 21
-		additional_inventory_weight2  = 21
+		additional_inventory_weight   = 21.5
+		additional_inventory_weight2  = 21.5
 		artefact_count                = 3
 		immunities_sect               = sect_cs_scientific_outfit_good_immunities_1
 		repair_type                   = outfit_heavy
 		;repair_part_bonus             = 0.35
-		hit_fraction_actor            = 0.33
-		bones_koeff_protection        = actor_armor_exo
+		hit_fraction_actor            = 0.00000000000000035
+		bones_koeff_protection        = actor_armor_radiation
 		control_inertion_factor       = 1.33
 		power_loss                    = 0.05
         
-		burn_protection               = 0.13
-		shock_protection              = 2.0
+		burn_protection               = 0.35
+		shock_protection              = 2.3
 		radiation_protection          = 0.046
-		chemical_burn_protection      = 0.131
-		telepatic_protection          = 0.15
-		strike_protection             = 0.39
-		explosion_protection          = 0.45
-		wound_protection              = 0.80
-		fire_wound_protection         = 0.45
+		chemical_burn_protection      = 0.165
+		telepatic_protection          = 0.16
+		strike_protection             = 0.60
+		explosion_protection          = 0.50
+		wound_protection              = 1.27
+		fire_wound_protection         = 0.87
 
 [sect_cs_scientific_outfit_good_immunities_1]
 		burn_immunity                 = 0.00000025
@@ -1248,52 +1248,115 @@
 
 ;--------------------------------------------------------------------------
 
-[monolith_scientific_outfit_1]:outfit_base,outfit_restrictions_1
-		$spawn                        = "outfit\scientific_outfit"
+[svoboda_scientific_outfit_1]:outfit_base,outfit_restrictions_1
+		$spawn                        = "outfit\svoboda_scientific_outfit"
 		class                         = EQU_STLK
 		ef_equipment_type             = 2
-		visual                        = dynamics\outfit\monolith_scientific_outfit
-		actor_visual                  = actors\stalker_monolith\stalker_monolith_1.ogf
-		npc_visual                    = actors\stalker_monolith\stalker_monolith_1.ogf
-		player_hud_section            = actor_hud_monolith_seva
-		character_portrait            = ui_inGame2_neutral_nauchniy
+		visual                        = dynamics\outfit\svoboda_scientific_outfit
+		actor_visual                  = actors\stalker_freedom\stalker_free_0.ogf
+		npc_visual                    = actors\stalker_freedom\stalker_free_0.ogf
+		player_hud_section            = actor_hud_freedom_seva
+		character_portrait            = ui_inGame2_freedom_0
 		full_icon_name                = npc_icon_scientific_outfit
 		full_scale_icon               = 12, 11
         
-		inv_name                      = monolith_scientific_outfit_name_1
-		inv_name_short                = monolith_scientific_outfit_name_1
-		description                   = monolith_scientific_outfit_description_1
+		inv_name                      = svoboda_scientific_outfit_name_1
+		inv_name_short                = svoboda_scientific_outfit_name_1
+		description                   = svoboda_scientific_outfit_description_1
 		inv_grid_x                    = 108
-		inv_grid_y                    = 30
+		inv_grid_y                    = 12
+		upgr_icon_x                   = 1570
+		upgr_icon_y                   = 184
+		upgr_icon_width               = 313
+		upgr_icon_height              = 183
+		upgrades                      = up_gr_firstab_seva_2, up_gr_seconab_seva_2, up_gr_thirdab_seva_2, up_gr_fourtab_seva_2
+		installed_upgrades            =
+		upgrade_scheme                = up_scheme_seva_1
+        
+		community                     = freedom
+		kind                          = o_sci
+		cost                          = 105000
+		inv_weight                    = 5.5
+		additional_inventory_weight   = 21.5
+		additional_inventory_weight2  = 21.5
+		artefact_count                = 3
+		immunities_sect               = sect_scientific_outfit_immunities_1
+		repair_type                   = outfit_medium
+		;repair_part_bonus             = 0.37
+		hit_fraction_actor            = 0.00000000000000035
+		bones_koeff_protection        = actor_armor_radiation
+		control_inertion_factor       = 1.33
+		power_loss                    = 0.05
+        
+		burn_protection               = 0.30
+		shock_protection              = 2.0
+		radiation_protection          = 0.035
+		chemical_burn_protection      = 0.155
+		telepatic_protection          = 0.135
+		strike_protection             = 0.62
+		explosion_protection          = 0.50
+		wound_protection              = 1.26
+		fire_wound_protection         = 0.86
+
+;--------------------------------------------------------------------------
+
+[dolg_scientific_wood_outfit_1]:outfit_base,outfit_restrictions_1
+		$spawn                        =
+		class                         = EQU_STLK
+		ef_equipment_type             = 2
+		visual                        = dynamics\outfit\scientific_outfit
+		actor_visual                  = actors\stalker_dolg\stalker_dolg1a.ogf
+		npc_visual                    = actors\stalker_dolg\stalker_dolg1a.ogf
+		player_hud_section            = actor_hud_loner_seva
+		character_portrait            = ui_inGame2_Dolg_1
+		full_icon_name                = npc_icon_scientific_outfit
+		full_scale_icon               = 12, 11
+        
+		inv_name                      = dolg_scientific_wood_outfit_name_1
+		inv_name_short                = dolg_scientific_wood_outfit_name_1
+		description                   = dolg_scientific_wood_outfit_description_1
+		inv_grid_x                    = 108
+		inv_grid_y                    = 45
 		upgr_icon_x                   = 716
 		upgr_icon_y                   = 824
 		upgr_icon_width               = 198
 		upgr_icon_height              = 129
-		upgrades                      = up_gr_firstab_seva_1, up_gr_seconab_seva_1, up_gr_thirdab_seva_1, up_gr_fourtab_seva_1
-		installed_upgrades            =
+		upgrades                      = up_gr_firstab_seva_2, up_gr_seconab_seva_2, up_gr_thirdab_seva_2, up_gr_fourtab_seva_2
+		installed_upgrades            = 
 		upgrade_scheme                = up_scheme_seva_1
         
-		community                     = monolith
+		community                     = dolg
 		kind                          = o_sci
-		cost                          = 73400
+		cost                          = 115000
 		inv_weight                    = 5.5
-		additional_inventory_weight   = 22.5	
-		additional_inventory_weight2  = 22.5
+		additional_inventory_weight   = 25
+		additional_inventory_weight2  = 25
 		artefact_count                = 3
-		immunities_sect               = sect_scientific_outfit_immunities_1
+		immunities_sect               = sect_dolg_scientific_wood_outfit_immunities_1
 		repair_type                   = outfit_medium
-		;repair_part_bonus             = 0.32
-		hit_fraction_actor            = 0.35
-		bones_koeff_protection        = actor_armor_exo
+		;repair_part_bonus             = 0.44
+		hit_fraction_actor            = 0.00000000000000035
+		bones_koeff_protection        = actor_armor_radiation
 		control_inertion_factor       = 1.33
-		power_loss                    = 0.1
+		power_loss                    = 0.05
         
-		burn_protection               = 0.15
-		shock_protection              = 1.8
-		radiation_protection          = 0.036
-		chemical_burn_protection      = 0.15
-		telepatic_protection          = 0.105
-		strike_protection             = 0.38
-		explosion_protection          = 0.40
-		wound_protection              = 0.65
-		fire_wound_protection         = 0.33
+		burn_protection               = 0.60
+		shock_protection              = 2.0
+		radiation_protection          = 0.041
+		chemical_burn_protection      = 0.165
+		telepatic_protection          = 0.171
+		strike_protection             = 0.62
+		explosion_protection          = 0.52
+		wound_protection              = 1.29
+		fire_wound_protection         = 0.89
+
+[sect_dolg_scientific_wood_outfit_immunities_1]
+		burn_immunity                 = 0.00000025
+		chemical_burn_immunity        = 0.00000005
+		explosion_immunity            = 0.00000001
+		fire_wound_immunity           = 0.00000002
+		radiation_immunity            = 0.0
+		shock_immunity                = 0.00000003
+		strike_immunity               = 0.00000003
+		telepatic_immunity            = 0.00
+		wound_immunity                = 0.00000015

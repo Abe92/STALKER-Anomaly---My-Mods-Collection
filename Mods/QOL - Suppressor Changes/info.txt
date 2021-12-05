@@ -1,0 +1,16 @@
+
+
+This changes how suppressors/silencers affect your weapon. Generally, they apply positive effects at the cost of increased maintenance. Thus, they are meant to be used by experienced STALKERs who can afford to pay the extra costs associated with them.
+
+Adding a suppressor to your gun now applies the following:
+
++3% bullet speed
++1% gun accuracy
+-18% hipfire recoil
+-18% aimed recoil
++5% hipfire accuracy (stationary)
+-5% hipfire accuracy (moving)
+-15% hipfire accuracy (turning)
+25% faster gun degradation (due to increased back-pressure and suppressor needing cleaning)
+
+These are all easily editable in the .ltx file.

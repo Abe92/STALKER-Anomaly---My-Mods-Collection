@@ -1135,3 +1135,65 @@
 		strike_immunity               = 0.003
 		telepatic_immunity            = 0.00
 		wound_immunity                = 0.015
+		
+;--------------------------------------------------------------------------
+
+[exo_wood_outfit_1]:outfit_base,outfit_restrictions_1
+		$spawn                        =
+		class                         = E_STLK
+		ef_equipment_type             = 5
+		visual                        = dynamics\outfit\exolight_outfit
+		actor_visual                  = actors\stalker_neutral\stalker_neutral_3.ogf
+		npc_visual                    = actors\stalker_neutral\stalker_neutral_3.ogf
+		player_hud_section            = actor_hud_exolight
+		character_portrait            = ui_inGame2_neutral_4
+		full_icon_name                = npc_icon_exo_outfit
+		full_scale_icon               = 2, 11
+        
+		inv_name                      = exo_wood_outfit_name_1
+		inv_name_short                = exo_wood_outfit_name_1
+		description                   = exo_wood_outfit_description_1
+		inv_grid_x                    = 110
+		inv_grid_y                    = 27
+		upgr_icon_x                   = 716
+		upgr_icon_y                   = 824
+		upgr_icon_width               = 198
+		upgr_icon_height              = 129
+		upgrades                      = up_gr_firstab_exolight_2, up_gr_seconab_exolight_2, up_gr_thirdab_exolight_2, up_gr_fourtab_exolight_2
+		installed_upgrades            =
+		upgrade_scheme                = up_scheme_exolight_1
+		
+		kind                          = o_heavy
+		cost                          = 175000
+		inv_weight                    = 7.5
+		additional_inventory_weight   = 30
+		additional_inventory_weight2  = 30
+		artefact_count                = 4
+		immunities_sect               = sect_exo_wood_outfit_immunities_1
+		repair_type                   = outfit_heavy
+		;repair_part_bonus             = 0.50
+		hit_fraction_actor            = 0.00000000000000020
+		bones_koeff_protection        = actor_armor_military_exo
+		control_inertion_factor       = 1.76
+		power_loss                    = 0.05
+        
+		burn_protection               = 0.65
+		shock_protection              = 0.67
+		radiation_protection          = 0.038
+		chemical_burn_protection      = 0.042
+		telepatic_protection          = 0.13
+		strike_protection             = 0.65
+		explosion_protection          = 0.75
+		wound_protection              = 1.42
+		fire_wound_protection         = 1.25
+
+[sect_exo_wood_outfit_immunities_1]
+		burn_immunity                 = 0.00000025
+		chemical_burn_immunity        = 0.00000005
+		explosion_immunity            = 0.00000001
+		fire_wound_immunity           = 0.00000002
+		radiation_immunity            = 0.0
+		shock_immunity                = 0.00000003
+		strike_immunity               = 0.00000003
+		telepatic_immunity            = 0.00
+		wound_immunity                = 0.00000015
