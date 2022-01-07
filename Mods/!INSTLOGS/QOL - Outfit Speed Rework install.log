@@ -1,9 +1,0 @@
-\README
-NEWFLDR|gamedata\configs\items\settings\
-gamedata\configs\items\settings\outfit_speed.ltx
-gamedata\configs\text\eng\ui_st_inventory_movespeed.xml
-gamedata\configs\text\rus\ui_st_inventory_movespeed.xml
-gamedata\scripts\monke_patch_ui.script
-gamedata\scripts\outfit_speed.script
-gamedata\scripts\outfit_speed_mcm.script
-gamedata\scripts\speed.script
