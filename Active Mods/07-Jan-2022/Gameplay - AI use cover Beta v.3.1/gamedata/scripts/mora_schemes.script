@@ -1,0 +1,297 @@
+local verification_npc = {}
+local verification_npc2 = {}
+
+local function npc_on_hit_callback(npc,amount,local_direction,who,bone_index)
+	if (amount > 0) then
+		db.storage[npc:id()].hitted_by = who and who:id()
+	end
+	
+	-- txr_bribe
+	if who:id() == AC_ID then
+		-- txr_bribe.npc_on_hit_callback(character_community(npc))
+		verification_npc[npc:id()] = 0
+		-- SetHudMsg_2("Me hago cero")
+	end
+end
+
+function on_game_start()
+	RegisterScriptCallback("npc_on_hit_callback",npc_on_hit_callback)
+	RegisterScriptCallback("save_state", save_state)
+    RegisterScriptCallback("load_state", load_state)
+end
+
+function save_state(m_data)
+    m_data.coward_table = coward_table
+	m_data.table_npc = table_npc
+	m_data.swicth_table2 = swicth_table2
+end
+
+function load_state(m_data)
+    coward_table = m_data.coward_table
+	table_npc = m_data.table_npc
+	swicth_table2 = m_data.swicth_table2
+end
+
+	local swicth_table2 = {}
+
+	local time_table = {}
+	local time_table2 = {}
+	local swicth_table = {}
+
+	local table_npc = {}
+	local coward_table = {} --table npc (1 true, 2 false)
+	math.randomseed(os.time())
+	local rnd = math.random(18000,25000)
+	local rnd2 = math.random(35000,50000)
+
+	-- local table_npc = setmetatable({},{
+		-- __index = function(t1,k1)
+		-- t1[k1] = setmetatable({},{
+         -- __index = function(t2,k2)
+            -- t2[k2] = 0
+            -- return t2[k2]
+         -- end
+      -- })
+      -- return t1[k1]
+	-- end
+	-- })
+	
+		-- local swicth_table2 = setmetatable({},{
+		-- __index = function(t1,k1)
+		-- t1[k1] = setmetatable({},{
+         -- __index = function(t2,k2)
+            -- t2[k2] = 0
+            -- return t2[k2]
+         -- end
+      -- })
+      -- return t1[k1]
+	-- end
+	-- })
+
+function trace_this(to_trace1)
+	-- local pos1 = npc:position()
+	-- local pos2 = enemy:position()
+	-- local dist = pos1:distance_to_sqr(pos2)
+	
+    local log_file = io.open("log_memory_npc", "a")
+    log_file:write(to_trace1)
+    log_file:close(log_file)
+end
+
+function coward_npc(id)
+		-- A npc has a 1 in 10 chance of being a coward
+		local rnd3 = math.random(1,10)						
+		
+		if coward_table[id] == nil then
+		 -- trace_this(id.." Tabla cobarde iniciada\n")
+			if (rnd3 == 1) then
+				coward_table[id] = 1
+				-- trace_this("Es cobarde\n")
+			else coward_table[id] = 2
+				-- trace_this("No es cobarde\n")
+			end
+		end
+end
+
+function is_coward(id, distance, my_memory)
+--conditions for a cowardly npc to use the 'camper' scheme
+		-- trace_this(id.." Entrando a la verificacion COWARD.\n")
+		-- trace_this(id.." ID.\n")
+		-- trace_this(distance.." Distancia.\n")
+		-- trace_this(my_memory.." Memoria.\n")
+		-- trace_this(coward_table[id].." Tabla cobarde.\n")
+		if coward_table[id] ~= nil then
+			if (coward_table[id] == 1 and distance >= 200 and my_memory < rnd2) then
+				-- trace_this(id.." Verificado COWARD. ES TRUE\n")
+				return true
+			end
+			-- trace_this(id.." Verificado COWARD. ES FALSE\n")
+		end
+end
+
+function pure_enemy_distance(npc, enemy)
+		
+		local st = db.storage[npc:id()]
+		local enemy = st and st.enemy_id and (db.storage[st.enemy_id] and db.storage[st.enemy_id].object or level.object_by_id(st.enemy_id))
+		local pos1 = npc:position()
+		local pos2 = enemy:position()
+		local dist = pos1:distance_to_sqr(pos2)
+		if (dist < 100) then
+			return true
+		end
+end
+	
+function scheme_camper(enemy,npc,actor)
+	-- swicth_table2[npc:id()] = false
+	local enemy_id = db.storage[npc:id()].enemy_id
+	local enemy2 = enemy_id and level.object_by_id(enemy_id)
+	local time_in_memory = time_global()
+	local pos1 = npc:position()
+	local pos2 = enemy:position()
+	local is_actor = (enemy_id == db.actor:id())
+	local dist = pos1:distance_to_sqr(pos2)
+	time_table[npc:id()] = time_global() - npc:memory_time(enemy)
+	
+	-- local is_monster = character_community(enemy2) == "zombied" or IsMonster(enemy2)
+	-- local is_friend = character_community(db.actor) == character_community(enemy2)
+	
+	-- if is_monster then
+		-- -- trace_this(npc:id().." ES UN MOUNSTRUO\n")		
+	-- end
+		
+	if (enemy_id ~= nil and enemy_id == db.actor:id()) then
+		 -- trace_this(npc:id().." Inicia la funcion CAMPER\n")		
+		coward_npc(npc:id())
+			if pure_enemy_distance(npc,enemy) then
+				 -- trace_this(npc:id().." RETORNO FALSO POR PURE ENEMY\n")
+				return false
+			end
+				
+			if (npc:see(enemy)) then -- Si el NPC vio a un enemigo, hace "true" a la multitabla
+				 -- trace_this(npc:id().." Segunda condicion\n")
+				table_npc[npc:id()] = true
+			end
+			
+			--CONDICION IMPORTANTE. ES LA QUE DETERMINA SI SE ACTIVARA EL SWITCHE O NO	
+				if (table_npc[npc:id()] == true and time_table[npc:id()] >= 100) and swicth_table2[npc:id()] ~= true then 
+					 -- trace_this(npc:id().." Cuarta condicion CUMPLIDA\n")
+					swicth_table2[npc:id()] = true
+				end
+			--CONDICION IMPORTANTE. ES LA QUE DETERMINA SI SE ACTIVARA EL SWITCHE O NO	
+			
+			-- trace_this(dist.." Esa es mi distancia [CAMPER]\n")
+			if is_coward(npc:id(),dist,time_table[npc:id()]) and swicth_table2[npc:id()] == true then
+				 -- trace_this(npc:id().." Soy cobarde ACTIVO CAMPER\n\n")
+				return true
+			end
+			
+			if verification_npc2[npc:id()] == nil then
+				verification_npc2[npc:id()] = 0
+			end
+			
+			if verification_npc[npc:id()] == 15 and dist > 200 then
+				if verification_npc2[npc:id()] < 20 then
+					verification_npc2[npc:id()] = verification_npc2[npc:id()] + 1
+					else  
+						verification_npc[npc:id()] = 0
+						verification_npc2[npc:id()] = 0
+						 -- trace_this(npc:id().." Soy 1 FALSE\n\n")
+						return false
+					end
+				-- trace_this(npc:id().." Estoy seguro ACTIVO CAMPER\n\n")
+				return true
+			end 
+			
+			if (npc.health >= 0.3) then 
+				if time_table[npc:id()] ~= nil then	
+					if dist >= 2000 and dist < 15000 and time_table[npc:id()] < rnd then
+						if (swicth_table2[npc:id()] == true and enemy.health > 0.4) then
+							 -- trace_this(npc:id().." Soy el segundo true del scheme CAMPER\n")
+							 -- trace_this(npc:id().." Activo el scheme CAMPER\n\n")
+							return true
+						end		 
+					end
+				
+					if dist >= 15000 and time_table[npc:id()] < rnd2 then
+						
+						if (swicth_table2[npc:id()] == true and enemy.health > 0.4) then
+							 -- trace_this(" Soy el tercer true del scheme CAMPER\n")
+							 -- trace_this(npc:id().." Activo el scheme CAMPER\n\n")
+							return true
+						end	
+					 -- trace_this(" Soy 2 FALSE\n")	
+					return false
+				end
+			end
+			
+		  end
+		     -- trace_this(npc:id().." Termina el scheme CAMPER FALSE\n")
+			return false
+	   end
+end
+
+function scheme_cover(enemy,npc,actor)
+	
+	local enemy_id = db.storage[npc:id()].enemy_id
+	-- local enemy2 = enemy_id and level.object_by_id(enemy_id)
+	local pos1 = npc:position()
+	local pos2 = enemy:position()
+	local dist = pos1:distance_to_sqr(pos2)
+	local is_actor = (enemy_id == db.actor:id())
+	time_table2[npc:id()] = time_global() - npc:memory_time(enemy)
+
+	-- local is_friend = character_community(db.actor) == character_community(enemy2)
+	-- local is_friend2 = character_community(db.actor) == character_community(enemy)
+	-- local is_monster = character_community(enemy2) == "zombied" or IsMonster(enemy2)
+	
+	
+	if (enemy_id ~= nil and enemy_id == db.actor:id()) then
+		 -- trace_this(npc:id().." Inicia la funcion COVER\n")
+		 -- trace_this(npc:id().." DENTRO\n")
+		coward_npc(npc:id()) -- Se inicia la funcion que determina un NPC cobarde
+		 -- trace_this("YO: "..npc:id().."\n")
+						
+			if is_actor == true then
+				 -- trace_this("Es el jugador\n")
+				else if (enemy_id ~= nil and enemy_id > 0) then 
+				 -- trace_this("ID enemigo: "..enemy_id.."\n") 
+				end
+			end		
+			
+			if pure_enemy_distance(npc,enemy) then
+				 -- trace_this(npc:id().." RETORNO FALSO POR PURE ENEMY\n")
+				return false
+			end
+				
+			if (npc:see(db.actor)) then -- Si el NPC vio a un enemigo, hace "true" a la multitabla
+				 -- trace_this(npc:id().." Segunda condicion\n")
+				table_npc[npc:id()] = true
+			end
+			
+			 -- trace_this(time_table2[npc:id()].." time table\n")
+			
+			--CONDICION IMPORTANTE. ES LA QUE DETERMINA SI SE ACTIVARA EL SWITCHE O NO	
+				if (table_npc[npc:id()] == true and time_table2[npc:id()] >= 100) and swicth_table2[npc:id()] ~= true then 
+					 -- trace_this(npc:id().." Cuarta condicion CUMPLIDA\n")
+					swicth_table2[npc:id()] = true
+				end
+			--CONDICION IMPORTANTE. ES LA QUE DETERMINA SI SE ACTIVARA EL SWITCHE O NO	
+			
+			if verification_npc[npc:id()] == nil then
+				verification_npc[npc:id()] = 0
+			end
+			
+			 -- trace_this(dist.." Distancia.\n")
+			 -- trace_this(time_table2[npc:id()].." Memoria.\n")
+			if (coward_table[npc:id()] ~= 1) then 
+				 -- trace_this(npc:id().." Quinta condicion\n") 
+				if (dist < 2000 and dist > 100) and time_table2[npc:id()] < rnd2 then  
+					 -- trace_this(npc:id().." Quinta condicion 1t \n")
+						
+						if swicth_table2[npc:id()] == true then
+							-- trace_this(npc:id().." Swicth activo\n\n")
+							else 
+							-- trace_this(npc:id().." Swicth apagado\n\n")
+						end 
+							-- trace_this("Verificacion: "..verification_npc[npc:id()].."\n")
+						if swicth_table2[npc:id()] == true and verification_npc[npc:id()] ~= 15 then
+							-- trace_this(npc:id().." Quinta condicion 2t\n\n")
+							-- trace_this(npc:id().." TENGO ACTIVO SCHEME COVER\n\n")
+							if verification_npc[npc:id()] < 15 then
+								verification_npc[npc:id()] = verification_npc[npc:id()] + 1
+							end
+							return true
+						end
+						else 
+						-- trace_this(npc:id().." Quinta condicion 1f RETORNO FALSO\n\n") 
+						return false
+				   end
+				   -- trace_this(npc:id().." Quinta condicion f\n\n")
+				   return false
+				end
+				 -- trace_this(npc:id().." Condicion principal falsa\n\n")
+				 -- trace_this(npc:id().." Termina el scheme COVER FALSE\n\n")
+				 return false
+			end	
+		
+	end

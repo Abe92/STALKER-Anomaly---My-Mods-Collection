@@ -1,0 +1,1042 @@
+
+;; ===========================< Loadout >=============================
+;; To add items in the item lists:
+;; -------------------------------
+;; add a new line: "item_section			= value_1,value_2,value3" under the correct section below
+;; "item_section": is the section name of the your item. NOTE: don't make lines with the same "item_section", only the last one will be read
+;; "value_1": (boolean  value, must be true or false) determines wether this item should be added to player's inventory list (false) or to the loadout pick list (true)
+;; "value_2": (number) the amount of the said item
+;; "value_3": (number) how many points it requires
+;; "value_4": (number) what progression difficulty is this item locked at (2 means it's available for difficulty 1 and 2) [no value means its available for all difficulties]
+;; ========================================================
+;; put your custom items under "custom" section, they will always appear to pick from
+;; NOTE: you will get a single bolt only no matter how many you put in here, due to technical engine reasons
+
+;	---------------------
+;	NEW GAME LOADOUT+
+;	REWRITE AND REBALANCE by SILKYSMOOTH
+;	v1	2021-01-28
+;	---------------------
+
+[points]
+total_points_eco_1 = 2000 ; originally	1000
+total_points_eco_2 = 1500 ; 	"" 		700
+total_points_eco_3 = 1000 ; 	""		400
+
+
+[custom]	
+;example						= false,1,0 
+;	(1 'example', placed in starting inventory)
+;example						= true,4,500,2
+;	(4 'example's, costing 500 each, unavailable on Survivalist)
+
+;;
+[shared]:custom  ;  ITEMS HERE GO TO EVERY FACTION
+;	default
+cash 					        = false,1,0		;WALLET, IDK WHAT IT DO
+money_5000						= false,1,0		;SPAWN WITH 5000RU
+;	outfit
+itm_backpack					= true,1,50
+;	weapons
+wpn_binoc_inv					= true,1,100
+wpn_knife						= true,1,20
+wpn_knife3						= true,1,100
+wpn_tt33						= true,1,200
+wpn_pm							= true,1,200
+wpn_colt1911					= true,1,250
+wpn_pmm							= true,1,250
+wpn_bm16						= true,1,300
+wpn_vz61						= true,1,400
+wpn_ak74u_old					= true,1,450	;NO DOVETAIL
+wpn_ak74_old					= true,1,500	;NO DOVETAIL
+wpn_mosin						= true,1,500
+;	food
+;	drink
+;	medical
+bandage							= true,2,30
+;	devices
+device_flashlight				= true,1,10
+;	tool
+batteries_dead					= true,1,40
+box_matches						= true,1,10
+swiss_knife						= true,1,50
+;	repair
+;	parts
+;	misc
+hand_watch						= true,1,10
+;	note
+
+;;
+[stalker_loadout]:shared
+;	stalker outfit
+helm_resp			            = false,1,0
+novice_outfit		            = false,1,0
+stalker_patch			        = false,1,0
+kit_hunt						= true,1,250
+
+;	stalker weapons
+wpn_aps							= true,1,400
+wpn_toz34_obrez					= true,1,500
+wpn_kiparis						= true,1,550
+wpn_ak74u						= true,1,650
+wpn_aks							= true,1,750
+wpn_svt40						= true,1,850
+wpn_vintorez_1pn93				= true,1,950
+
+;	stalker food
+tushonka						= true,1,60
+sausage							= true,1,30
+nuts							= true,1,50
+protein							= true,1,40
+raisins							= true,1,10
+corn							= true,1,20
+breadold						= true,1,10
+
+;	stalker drink
+flask							= true,1,30
+energy_drink					= true,1,60
+vodka							= true,1,90
+cigar1							= true,1,100
+cigar2							= true,1,130
+cigar3							= true,1,150
+
+;	stalker medical
+medkit							= true,1,150
+medkit_ai1						= true,1,400
+caffeine						= true,1,10
+analgetic						= true,1,120
+tetanus							= true,1,110
+akvatab							= true,1,100
+
+;	stalker devices
+device_pda_1					= false,1,0
+detector_radio					= true,1,100
+detector_geiger					= true,1,150
+detector_simple					= true,1,150
+;	stalker tool
+journal							= false,1,0
+leatherman_tool					= true,1,200
+grooming						= true,1,30
+bolts_pack						= true,1,10
+batteries_dead					= true,2,40
+itm_mapkit_8					= true,1,100
+money_400_500					= true,4,50
+money_900_1000					= true,3,100
+money_1000_5000					= true,1,500
+
+;	stalker repair
+gun oil							= true,1,20
+armor_repair_fa					= true,1,20
+sharpening_stones				= true,1,30
+
+;	stalker misc
+stalker_patch					= false,1,0
+picture_woman					= false,1,0	
+bolt							= false,1,0		
+porn_2							= true,1,10		
+
+;	stalker note
+recipe_ammo_1					= true,1,100
+recipe_drug_1					= true,1,100
+recipe_basic_1					= true,1,100
+
+
+;;
+[bandit_loadout]:shared
+
+;	bandit outfit
+helm_cloth_mask	                = false,1,0
+trenchcoat_outfit	            = false,1,0
+bandit_patch			        = false,1,0
+
+;	bandit weapons
+wpn_mp412						= true,1,350
+wpn_beretta						= true,1,400
+wpn_desert_eagle				= true,1,450
+wpn_toz34_obrez_decor			= true,1,500
+wpn_kiparis						= true,1,550
+wpn_mp5							= true,1,650
+wpn_aks							= true,1,750
+wpn_g43							= true,1,850
+
+;	bandit food
+tushonka						= true,1,60
+tomato							= true,1,30
+sausage							= true,1,30
+kolbasa							= true,1,40
+conserva						= true,1,40
+breadold						= true,1,10
+
+;	bandit drink
+beer							= true,1,80
+bottle_metal					= true,1,70
+vodka							= true,1,90
+vodka_quality					= true,1,160
+tobacco							= true,1,80
+cigarettes_russian				= true,1,50
+energy_drink					= true,1,60
+
+;	bandit medical
+stimpack						= true,2,50
+yadylin							= true,2,40
+morphine						= true,1,150
+salicidic_acid					= true,1,50
+analgetic						= true,1,150
+cocaine							= true,1,200
+
+;	bandit devices
+device_pda_1					= false,1,0
+detector_radio					= true,1,100
+
+;	bandit tool
+harmonica_a						= true,1,10
+leatherman_tool					= true,1,200
+batteries_dead					= true,1,40
+money_400_500					= true,4,50
+money_900_1000					= true,5,100
+money_1000_5000					= true,1,500
+
+;	repair
+sharpening_stones				= true,1,30
+
+;	bandit misc
+porn							= true,1,20
+porn_2							= true,1,10
+
+;	bandit note
+;	N/A
+
+
+;;
+[ecolog_loadout]:shared
+
+;	ecolog outfit
+helm_resp						= false,1,0
+ecolog_guard_outfit				= false,1,0
+ecolog_patch					= false,1,0
+kit_hunt						= true,1,200
+
+;	ecolog weapons
+wpn_fort						= true,1,400
+wpn_sig220						= true,1,350
+wpn_fort500						= true,1,600
+wpn_wincheaster1300				= true,1,650
+wpn_pp2000						= true,1,600
+wpn_ak74u						= true,1,650
+wpn_9a91						= true,1,800
+
+;	ecolog food
+ration_ukr						= true,1,300
+meat_flesh_a					= true,1,20
+meat_boar_a						= true,1,20
+chocolate						= true,1,50
+protein							= true,1,40
+mint							= true,1,10
+
+;	ecolog drink
+mineral_water					= true,1,50
+energy_drink					= true,1,60
+cigarettes_russian				= true,1,50
+
+;	ecolog medical
+medkit							= true,1,100
+medkit_army						= true,1,200
+medkit_scientic					= true,1,400
+medkit_ai1						= true,1,300
+medkit_ai3						= true,1,500
+survival_kit					= true,1,400
+morphine						= true,1,50
+salicidic_acid					= true,1,50
+jgut							= true,1,50
+analgetic						= true,1,80
+tetanus							= true,1,80
+stimpack_scientic				= true,1,200
+drug_radioprotector				= true,1,20
+drug_psy_blockade				= true,1,20
+drug_coagulant					= true,1,20
+drug_anabiotic					= true,1,20
+akvatab							= true,1,70
+
+;	ecolog devices
+device_pda_2					= false,1,0
+detector_geiger					= true,1,150
+detector_radio					= true,1,100
+detector_advanced				= true,1,400
+detector_elite					= true,1,600
+detector_scientific				= true,1,800
+device_torch_dummy				= true,1,50
+
+;	ecolog tool
+grooming						= true,1,30
+bolts_pack						= true,1,10
+itm_mapkit_2					= true,1,100
+batteries_dead					= true,2,40
+money_400_500					= true,4,50
+money_900_1000					= true,5,100
+money_1000_5000					= true,1,500
+
+;	ecolog repair
+gun_oil							= true,1,20
+armor_repair_fa					= true,1,20
+sharpening_stones				= true,1,30
+
+;	ecolog misc
+bolt							= false,1,0
+lead_box						= true,1,50
+
+;	ecolog note
+recipe_expert_1					= true,1,100
+recipe_expert_2					= true,1,200
+recipe_drug_1					= true,1,100
+recipe_drug_2					= true,1,200
+
+
+;;
+[dolg_loadout]:shared
+
+;	dolg outfit
+helm_resp			            = false,1,0
+dolg_novice_outfit	            = false,1,0
+dolg_patch				        = false,1,0
+
+;	dolg weapons
+grenade_rgd5					= true,2,100
+wpn_fort						= true,1,400
+wpn_fort500						= true,1,600
+wpn_vityaz						= true,1,650
+wpn_ak104						= true,1,700
+wpn_aek							= true,1,750
+wpn_svt40						= true,1,850
+wpn_groza						= true,1,950
+
+
+;	dolg food
+ration_ukr						= true,1,300
+chocolate						= true,1,50
+nuts							= true,1,50
+sausage							= true,1,30
+meat_dog_a						= true,1,20
+meat_pseudodog_a				= true,1,20
+
+;	dolg drink
+flask							= true,1,20
+vodka							= true,1,90
+beer							= true,1,80
+energy_drink					= true,1,60
+cigar1							= true,1,100
+cigar2							= true,1,130
+cigar3							= true,1,150
+akvatab							= true,1,100
+
+;	dolg medical
+medkit							= true,2,150
+medkit_army						= true,2,250
+medkit_ai1						= true,2,400
+medkit_ai2						= true,2,600
+
+;	dolg devices
+device_pda_2					= false,1,0
+
+;	dolg tool
+grooming						= true,1,30
+leatherman_tool					= true,1,200
+batteries_dead					= true,1,40
+money_400_500					= true,4,50
+money_900_1000					= true,5,100
+money_1000_5000					= true,1,500
+
+;	dolg repair
+gun_oil_ru_d					= true,1,30
+sewing_kit_b					= true,1,30
+cleaning_kit_u					= true,1,250
+sewing_kit_h					= true,1,250
+
+;	dolg misc
+bolt_bullet						= false,1,0
+porn							= true,1,20
+
+;	dolg note
+recipe_ammo_1					= true,1,100
+
+
+;;
+[freedom_loadout]:shared
+
+;	outfit
+helm_resp				        = false,1,0
+svoboda_light_outfit	        = false,1,0
+freedom_patch			        = false,1,0
+equ_pack_small					= true,1,500
+
+;	freedom weapons
+wpn_hpsa						= true,1,400
+wpn_beretta						= true,1,400
+wpn_mossberg590					= true,1,600
+wpn_spas12						= true,1,650
+wpn_mp5							= true,1,650
+wpn_m4a1						= true,1,700
+wpn_g36							= true,1,750
+wpn_l85							= true,1,800
+wpn_m249						= true,1,950
+
+;	freedom food
+mre								= true,1,130
+mint							= true,1,10
+chocolate						= true,1,40
+nuts							= true,1,50
+protein							= true,1,40
+raisins							= true,1,10
+tomato							= true,1,30
+corn							= true,1,20
+beans							= true,1,40
+meat_flesh_a					= true,1,10
+meat_psysucker_a				= true,1,20
+meat_bloodsucker_a				= true,1,20
+
+;	freedom drink
+flask							= true,1,20
+beer							= true,1,30
+vodka							= true,1,90
+metal_bottle					= true,1,70
+energy_drink					= true,1,30
+cigarettes						= true,1,110
+cigarettes_lucky				= true,1,130
+joint							= true,1,50
+marijuana						= true,1,100
+
+;	freedom medical
+medkit							= true,1,150
+medkit_ai1						= true,1,400
+tetanus							= true,1,100
+morphine						= true,1,80
+salicidic_acid					= true,1,50
+stimpack						= true,2,50
+survival_kit					= true,1,500
+drug_sleepingpills				= true,1,20
+antirad							= true,1,200
+akvatab							= true,1,100
+
+;	freedom devices
+device_pda_2					= false,1,0
+device_torch_dummy 				= true,1,50
+detector_radio					= true,1,100
+detector_geiger					= true,1,150
+detector_simple					= true,1,300
+
+;	freedom tool
+leatherman_tool					= true,1,200
+batteries_dead					= true,2,40
+harmonica_a						= true,1,50
+guitar_a						= true,1,150
+money_400_500					= true,4,50
+money_900_1000					= true,5,100
+money_1000_5000					= true,1,500
+
+;	freedom repair
+gun_oil							= true,1,20
+solvent							= true,1,20
+armor_repair_fa					= true,1,20
+sharpening_stones				= true,1,30
+cleaning_kit_u					= true,1,250
+sewing_kit_h					= true,1,250
+
+;	freedom misc
+bolt_bullet						= false,1,0
+porn							= true,1,30
+porn_2							= true,1,30
+lead_box						= true,1,50
+af_aac							= true,1,200
+
+;	freedom note
+recipe_ammo_1					= true,1,100
+recipe_ammo_2					= true,1,200
+recipe_basic_1					= true,1,100
+recipe_drug_1					= true,1,100
+
+
+;;
+[killer_loadout]:shared
+
+;	killer outfit
+helm_rp_bala		            = false,1,0
+merc_outfit		                = false,1,0
+killer_patch				    = false,1,0
+equ_pack_small					= false,1,500
+
+;	killer weapons
+grenade_f1						= true,1,150
+grenade_rgd5					= true,1,100
+wpn_sig220						= true,1,350
+wpn_beretta						= true,1,400
+wpn_usp							= true,1,450
+wpn_remington870				= true,1,600
+wpn_spas12						= true,1,650
+wpn_mp5							= true,1,650
+wpn_ump45						= true,1,600
+wpn_lr300						= true,1,700
+wpn_ak105						= true,1,750
+wpn_g3							= true,1,800
+wpn_ak103						= true,1,800
+wpn_g3sg1						= true,1,900
+
+;	killer food
+ration_ru						= true,1,350
+mre								= true,1,130
+beans							= true,1,40
+chili							= true,1,30
+mint							= true,1,10
+nuts							= true,1,50
+protein							= true,1,40
+salmon							= true,1,30
+breadold						= true,1,10
+
+;	killer drink
+flask							= true,1,20
+beer							= true,1,80
+vodka							= true,1,90
+energy_drink					= true,1,60
+cigarettes						= true,1,100
+cigarettes_lucky				= true,1,110
+hand_rolling_tobacco			= true,1,80
+tobacco							= true,1,80
+cigar							= true,1,150
+
+;	killer medical
+jgut							= true,1,80
+medkit							= true,1,150
+medkit_army						= true,1,250
+medkit_ai1						= true,1,400
+medkit_ai2						= true,1,600
+morphine						= true,2,80
+salicidic_acid					= true,2,50
+
+;	killer devices
+device_pda_1					= false,1,0
+device_torch_dummy				= true,1,50
+detector_radio					= true,1,100
+
+;	killer tool
+leatherman_tool					= true,1,200
+batteries_dead					= true,2,40
+money_400_500					= true,4,50
+money_900_1000					= true,5,100
+money_1000_5000					= true,1,500
+
+;	killer repair
+gun_oil							= true,1,20
+solvent							= true,1,20
+armor_repair_fa					= true,1,20
+sewing_kit_b					= true,1,30
+sharpening_stones				= true,1,30
+cleaning_kit_u					= true,1,250
+sewing_kit_h					= true,1,250
+
+;	killer misc
+bolt_bullet						= false,1,0
+
+;	killer note
+recipe_ammo_1					= true,1,100
+recipe_ammo_2					= true,1,200
+
+;;
+[army_loadout]:shared
+
+;	army outfit
+helm_bandana	                = false,1,0
+army_outfit		                = false,1,0
+army_patch				        = false,1,0
+equ_military_pack				= true,1,800
+
+;	army weapons
+grenade_f1						= true,2,150
+wpn_fort						= true,1,400
+wpn_glock						= true,1,450	
+wpn_wincheaster1300				= true,1,650
+wpn_vityaz						= true,1,650
+wpn_bizon						= true,1,700
+wpn_ak105						= true,1,700
+wpn_ak74m						= true,1,750
+wpn_svu							= true,1,900
+wpn_rpg7						= true,1,950
+ammo_og-7b						= true,1,100
+
+;	army food
+ration_ukr						= true,1,250
+protein							= true,1,80
+nuts							= true,1,100
+raisins							= true,1,20
+
+;	army drink
+flask							= true,1,20
+energy_drink					= true,2,120
+cigar1							= true,1,200
+cigar2							= true,1,260
+cigar3							= true,1,300
+akvatab							= true,3,50
+etp								= true,1,20
+
+;	army medical
+medkit							= true,2,100
+medkit_army						= true,2,200
+medkit_ai1						= true,1,300
+medkit_ai2						= true,1,500
+morphine						= true,1,160
+salicidic_acid					= true,1,100
+
+;	army devices
+device_pda_2					= false,1,0
+device_torch_dummy				= true,1,50
+
+;	army tool
+grooming						= false,1,0
+leatherman_tool					= true,1,50
+money_400_500					= true,4,50
+money_900_1000					= true,3,100
+money_1000_5000					= true,1,500
+
+;	army repair
+cleaning_kit_u					= true,1,200
+sewing_kit_h					= true,1,200
+
+;	army misc
+bolt_bullet						= false,1,0
+
+;	army note
+
+
+;;
+[monolith_loadout]:shared 
+
+;	monolith outfit
+helm_resp			            = false,1,0
+monolith_outfit	                = false,1,0
+monolith_patch			        = false,1,0
+kit_hunt						= true,1,250
+equ_pack_small					= true,1,500
+
+;	monolith weapons
+grenade_gd-05					= true,2,200
+wpn_fort						= true,1,400
+wpn_usp							= true,1,450
+wpn_spas12						= true,1,600
+wpn_protecta					= true,1,600
+wpn_mp5							= true,1,650
+wpn_ump45						= true,1,600
+wpn_bizon						= true,1,700
+wpn_lr300						= true,1,700
+wpn_ak12						= true,1,750
+wpn_fn2000						= true,1,800
+wpn_svu							= true,1,900
+wpn_val							= true,1,900
+wpn_groza						= true,1,950
+
+;	monolith food
+breadold						= true,1,10
+kolbasa							= true,1,40
+
+;	monolith drink
+flask							= true,1,20
+
+;	monolith medical
+medkit							= true,1,150
+medkit_army						= true,1,250
+medkit_ai1						= true,1,400
+medkit_ai2						= true,1,600
+medkit_ai3						= true,1,600
+morphine						= true,1,80
+survival_kit					= true,1,500
+yadylin							= true,3,20
+glucose							= true,1,20
+glucose_s						= true,1,10
+adrenalin						= true,1,150
+analgetic						= true,1,150
+
+;	monolith devices
+device_pda_2					= false,1,0
+detector_simple					= true,1,300
+detector_advanced				= true,1,500
+detector_elite					= true,1,800
+device_torch_dummy				= true,1,50
+
+;	monolith tool
+leatherman_tool					= true,1,200
+batteries_dead					= true,1,40
+itm_mapkit_3					= true,1,100
+itm_mapkit_6					= true,1,100
+itm_mapkit_7					= true,1,100
+money_400_500					= true,4,50
+money_900_1000					= true,3,100
+money_1000_5000					= true,1,500
+
+;	monolith repair
+gun_oil							= true,1,20
+armor_repair_fa					= true,1,20
+sharpening_stones				= true,1,20
+
+;	monolith misc
+bolt_bullet						= false,1,0
+lead box						= true,1,50
+af_aac							= true,1,200
+
+;	monolith note
+letter_monolith_prayer_1_of_3	= false,1,0
+letter_monolith_prayer_2_of_3	= false,1,0
+letter_monolith_prayer_3_of_3	= false,1,0
+
+
+;;
+[csky_loadout]:shared
+
+;	csky outfit
+helm_cloth_mask	                = false,1,0
+cs_novice_outfit	            = false,1,0
+csky_patch				        = false,1,0
+kit_hunt						= true,1,200
+
+;	csky weapons
+grenade_rgd5					= true,1,100
+wpn_hpsa						= true,1,400
+wpn_cz75						= true,1,450
+wpn_toz34						= true,1,600
+wpn_kiparis						= true,1,600
+wpn_mp5							= true,1,650
+wpn_ak74						= true,1,750
+wpn_sks							= true,1,750
+wpn_svt40						= true,1,850
+wpn_vintorez_1pn93				= true,1,950
+
+;	csky food
+nuts							= true,1,50
+protein							= true,1,40
+raisins							= true,1,20
+meat_boar_a						= true,1,30
+meat_flesh_a					= true,1,20
+meat_dog_a						= true,1,20
+meat_tushkano_a					= true,1,10
+
+;	csky drink
+flask							= true,1,10
+beer							= true,1,30
+vodka							= true,1,90
+metal_bottle					= true,1,70
+cigarettes_russian				= true,1,110
+energy_drink					= true,1,20
+tobacco							= true,1,60
+
+;	csky medical
+jgut							= true,1,80
+stimpack						= true,2,50
+medkit							= true,1,150
+medkit_scientic					= true,1,500
+medkit_ai1						= true,1,400
+medkit_ai3						= true,1,600
+morphine						= true,1,80
+
+;	csky devices
+device_pda_1					= false,1,0
+detector_radio					= true,1,100
+detector_geiger					= true,1,150
+detector_simple					= true,1,300
+detector_advanced				= true,1,600
+
+;	csky tool
+leatherman_tool					= true,1,200
+bolts_pack						= true,1,10
+batteries_dead					= true,2,40
+guitar_a						= true,1,200
+money_400_500					= true,4,50
+money_900_1000					= true,3,100
+money_1000_5000					= true,1,500
+
+;	csky repair
+gun_oil							= true,1,20
+solvent							= true,1,20
+armor_repair_fa					= true,1,20
+sewing_kit_b					= true,1,30
+sharpening_stones				= true,1,30
+
+;	csky misc
+bolt							= false,1,0
+lead_box						= true,1,50
+af_aac							= true,1,200
+
+;	csky note
+recipe_basic_1					= true,1,100
+recipe_basic_2					= true,1,200
+recipe_drug_1					= true,1,100
+recipe_drug_2					= true,1,200
+
+;;
+[renegade_loadout]:shared
+
+;	renegade outfit
+helm_cloth_mask	                = false,1,0
+renegademerc_outfit	            = false,1,0
+renegade_patch			        = false,1,0
+
+;	renegade weapons
+wpn_hpsa						= true,1,400
+wpn_toz34_obrez_decor			= true,1,500
+wpn_kiparis						= true,1,600
+wpn_bizon						= true,1,700
+wpn_sks							= true,1,800
+
+;	renegade food
+breadold						= true,1,10
+sausage							= true,1,30
+kolbasa							= true,1,40
+chocolate_p						= true,1,40
+
+;	renegade drink
+beer							= true,2,30
+vodka							= true,1,90
+metal_bottle					= true,2,70
+
+;	renegade medical
+yadylin							= true,2,30
+stimpack						= true,2,50
+morphine						= true,2,150
+analgetic						= true,2,150
+adrenalin						= true,1,150
+cocaine							= true,1,200
+
+;	renegade devices
+device_pda_1					= false,1,0
+
+;	renegade tool
+harmonica_a						= true,1,50
+guitar_a						= true,1,150
+money_400_500					= true,4,50
+money_900_1000					= true,3,100
+money_1000_5000					= true,1,500
+
+;	renegade repair
+armor_repair_fa					= true,1,20
+solvent							= true,1,20
+
+;	renegade misc
+bolt_bullet 			        = false,1,0
+
+;	renegade note
+;	N/A
+
+
+;;
+[greh_loadout]:shared
+
+;	greh outfit
+helm_cloth_mask	                = false,1,0
+greh_trenchcoat_outfit	        = false,1,0
+greh_patch			            = false,1,0
+
+;	greh weapons
+grenade_f1						= true,1,100
+grenade_gd-05					= true,1,200
+wpn_cz75						= true,1,400
+wpn_mp443						= true,1,450
+wpn_toz34						= true,1,600
+wpn_protecta					= true,1,650
+wpn_mp5							= true,1,600
+wpn_kiparis						= true,1,600
+wpn_bizon						= true,1,650
+wpn_ak105						= true,1,700
+wpn_ak74m						= true,1,750
+wpn_aug							= true,1,750
+wpn_galil						= true,1,800
+wpn_svu							= true,1,900
+
+;	greh food
+breadold						= true,1,10
+kolbasa							= true,1,40
+chocolate_p						= true,1,40
+meat_snork_a					= true,1,30
+meat_tushkano_a					= true,1,10
+meat_dog_a						= true,1,20
+meat_lurker_a					= true,1,20
+
+;	greh drink
+flask							= true,1,20
+metal_bottle					= true,1,70
+vodka_quality					= true,1,160
+drink_crow						= true,1,200
+tobacco							= true,1,80
+
+;	greh medical
+jgut							= true,1,80
+salicidic_acid					= true,1,50
+morphine						= true,1,80
+rebirth							= true,1,800
+adrenalin						= true,1,150
+cocaine							= true,1,200
+yadylin							= true,2,30
+stimpack						= true,2,50
+stimpack_army					= true,2,100
+drug_anabiotic					= true,1,250
+drug_booster					= true,1,150
+
+;	greh devices
+device_pda_1					= false,1,0
+device_torch_dummy				= true,1,50
+detector_radio					= true,1,100
+detector_geiger					= true,1,150
+detector_simple					= true,1,300
+detector_advanced				= true,1,500
+
+;	greh tool
+leatherman_tool					= true,1,50
+af_aac							= true,1,200
+bolts_pack						= true,1,10
+batteries_dead					= true,2,40
+money_400_500					= true,4,50
+money_900_1000					= true,3,100
+money_1000_5000					= true,1,500
+
+;	greh repair
+gun_oil							= true,1,20
+armor_repair_fa					= true,1,20
+cleaning_kit_u					= true,1,250
+sewing_kit_h					= true,1,250
+
+;	greh misc
+bolt_bullet						= false,1,0
+
+;	greh note
+
+
+;;
+[isg_loadout]:shared
+
+;	isg outfit
+helm_cloth_mask	                = false,1,0
+isg_outfit	                    = false,1,0
+isg_patch			            = false,1,0
+kit_hunt						= true,1,250
+equ_military_pack				= true,1,800
+
+;	isg weapons
+wpn_beretta						= true,1,400
+wpn_usp							= true,1,450
+wpn_mp433						= true,1,450
+wpn_mossberg590					= true,1,600
+wpn_mp153						= true,1,600
+wpn_spas12						= true,1,650
+wpn_mp5sd						= true,1,650
+wpn_pp2000						= true,1,600
+wpn_mp7							= true,1,700
+wpn_ace21						= true,1,700
+wpn_m4							= true,1,700
+wpn_ak102						= true,1,750
+wpn_aug							= true,1,800
+wpn_ak101						= true,1,800
+wpn_svu							= true,1,900
+wpn_sr25						= true,1,950
+
+;	isg food
+mre								= true,2,100
+
+;	isg drink
+flask							= true,1,20
+
+;	isg medical
+medkit_army						= true,2,250
+medkit_ai2						= true,1,500
+medkit_ai3						= true,1,500
+stimpack_army					= true,2,100
+morphine						= true,1,60
+tetanus							= true,1,110
+glucose							= true,1,40
+glucose_s						= true,1,20
+
+;	isg devices
+device_pda_2					= false,1,0
+detector_radio					= true,1,100
+detector_geiger					= true,1,150
+device_torch_dummy				= true,1,50
+
+;	isg tool
+money_400_500					= true,4,50
+money_900_1000					= true,3,100
+money_1000_5000					= true,1,500
+
+;	isg repair
+gun_oil							= true,1,40
+solvent							= true,1,40
+armor_repair_fa					= true,1,40
+sewing_kit_b					= true,1,60
+sharpening_stones				= true,1,60
+cleaning_kit_u					= true,1,250
+sewing_kit_h					= true,1,250
+
+;	isg misc
+bolt_bullet						= false,1,0
+
+;	isg note
+recipe_ammo_1					= true,1,100
+recipe_ammo_2					= true,1,200
+recipe_ammo_3					= true,1,300
+recipe_ammo_4					= true,1,400
+
+
+[zombied_loadout]:shared,stalker_loadout
+
+
+;; ===========================< Ammo >=============================
+
+;	NEW GAME LOADOUTS+
+;	TO-DO
+;	write framework for easily modifying all starting ammos. 
+;	fugg...
+
+
+;-- defined ammo type per weapon here (weapon section = ammo section) - Example: wpn_glock = ammo_9x19_fmj_bad
+;-- when a weapon in this section found in your inventory, you will be given the ammo stated for it
+;-- otherwise, ammo type will be the first one define in weapon's config
+[ammo_type_per_wpn]
+
+;-- define ammo count per ammo section (section = count) here - Example: ammo_9x19_fmj_bad = 60
+;-- When an ammo type is picked for a weapon in your inventory, it will be given to player by the count defined here
+;-- otherwise, ammo's count will be a full box size
+[ammo_count]
+;; ===========================< Money >=============================
+
+;	NEW GAME LOADOUTS+
+;	Money is now primarily handled through the money_xxxx items --from 'items_money.ltx'-- placed directly into stalker inventory. The following values have been set to 0 to minimize confusion with the money items, but any value set here will be added to the 5000Ru from [shared] section, and any additional Rubles purchased with Points. 
+
+[stalker_money]
+money = 0
+
+[bandit_money]
+money = 0
+
+[ecolog_money]
+money = 0
+
+[dolg_money]
+money = 0
+
+[freedom_money]
+money = 0
+
+[killer_money]
+money = 0
+
+[army_money]
+money = 0
+
+[monolith_money]
+money = 0
+
+[csky_money]
+money = 0
+
+[renegade_money]
+money = 0
+
+[greh_money]
+money = 0
+
+[isg_money]
+money = 0
+
+[zombied_money]
+money = 0

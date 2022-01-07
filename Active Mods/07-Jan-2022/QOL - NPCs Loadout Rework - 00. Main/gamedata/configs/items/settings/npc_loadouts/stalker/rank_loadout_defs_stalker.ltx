@@ -1,0 +1,36 @@
+[stalker_novice]
+primary  =  stalker_novice_primary
+extra  =  extras_novice
+
+[stalker_trainee]:stalker_novice
+primary  =  stalker_trainee_primary
+
+[stalker_experienced]:stalker_trainee
+primary  =  stalker_experienced_primary
+secondary  =  experienced_secondary
+extra  =  extras_experienced
+
+[stalker_professional]:stalker_experienced
+primary  =  stalker_professional_primary
+secondary  =  stalker_professional_secondary
+
+[stalker_veteran]:stalker_professional
+primary  =  stalker_veteran_primary
+secondary  =  veteran_secondary
+extra  =  extras_veteran
+
+[stalker_expert]:stalker_veteran
+primary  =  stalker_expert_primary
+secondary  =  stalker_expert_secondary
+
+[stalker_master]:stalker_expert
+primary  =  stalker_master_primary
+secondary  =  master_secondary
+extra  =  extras_master
+
+[stalker_legend]:stalker_master
+primary  =  stalker_legend_primary
+secondary  =  master_secondary
+extra  =  extras_master
+
+#include "loadout_*.ltx"

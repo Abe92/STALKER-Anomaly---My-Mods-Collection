@@ -1,0 +1,87 @@
+--< VARIABLES >------------------------------------------------------------------------------------------
+exo_flag = false
+local volume_walk -- mcm settings
+local volume_jump
+local volume_land
+local scale_freq
+--local discharge
+local snd_obj_step -- sound objects (defined and stored here so they're not cleared by garbage collector)
+local snd_obj_land
+local snd_obj_jump
+
+-- table used for checking exo type (0 - 29 light, 30 - 49 middle, 50+ heavy) (Could just use ifs :p)
+local exo_types = {
+    [0] = "light", [1] = "light",  [2] = "light",  [3] = "middle" , [4] = "middle"
+}
+local exo_type = "middle" -- default type just in case
+--------------------------------------------------------------------------------------------------------
+-- checking if player is wearing an exo
+function check_exo_suit(item)
+    if not IsOutfit(item) then return end
+    local actor = db.actor
+    local outfit = actor:item_in_slot(7)
+    --local backpack = db.actor:item_in_slot(13)
+    exo_flag = outfit and SYS_GetParam(0, outfit:section(), "repair_type") == "outfit_exo" -- and item_exo_device.is_psu(backpack)
+    if not exo_flag then return end
+    local weight = SYS_GetParam(0, outfit:section(), "inv_weight")
+    exo_type = exo_types[math.floor(weight / 10)] or "heavy"
+end
+
+function get_bp_cond()
+    local actor = db.actor
+    local backpack = actor:item_in_slot(13)
+    if not backpack then return 0 end
+
+    return backpack:condition()
+end
+
+function actor_on_footstep(material,power,hud_view,flags)
+    if exo_flag then
+		snd_obj_step = sound_object("exo-servo\\" .. exo_type .. "_servo_exo_walk" .. math.random(2)) -- not sure this is needed since pitch scales on second footstep already with frequency
+        snd_obj_step:play(db.actor, 0, sound_object.s2d)
+        snd_obj_step.volume = volume_walk * clamp(power, 0.5, 1.3)
+		snd_obj_step.frequency = scale_freq and clamp(power, 0.8, 1.1) or 1 -- lower max point of pitch, since high pitch is not cool on ears and I didn't get any feedback in tester chat
+	end
+end
+
+function actor_on_land(landing_speed)
+    if exo_flag and landing_speed > 5 then
+        snd_obj_land = sound_object("exo-servo\\" .. exo_type .. "_servo_exo_landing")
+        snd_obj_land:play(db.actor, 0, sound_object.s2d)
+        snd_obj_land.volume = volume_land * (landing_speed / 5)
+    end
+end
+
+function actor_on_jump()
+    if exo_flag then
+        snd_obj_jump = sound_object("exo-servo\\" .. exo_type .. "_servo_exo_jump")
+        snd_obj_jump:play(db.actor, 0, sound_object.s2d)
+        snd_obj_jump.volume = volume_jump
+    end
+end
+--[[
+function actor_on_before_hit(shit, bone_id, flags) -- maybe I should exclude this feature lmao, looks kinda dumb here
+    if shit.type ~= hit.shock or not exo_flag then return end
+    local backpack = db.actor:item_in_slot(13)
+    backpack:set_condition(clamp((get_bp_cond() - discharge), 0, 1))
+end
+]]
+function on_option_change()
+    volume_walk = exo_servo_sounds_mcm.get_config("volume_walk")
+    volume_jump = exo_servo_sounds_mcm.get_config("volume_jump")
+    volume_land = exo_servo_sounds_mcm.get_config("volume_land")
+	scale_freq = exo_servo_sounds_mcm.get_config("scale_freq")
+    --discharge = exo_servo_sounds_mcm.get_config("discharge")
+end
+
+function on_game_start()
+    RegisterScriptCallback("actor_on_footstep", actor_on_footstep)
+    --RegisterScriptCallback("actor_on_before_hit", actor_on_before_hit)
+    RegisterScriptCallback("actor_on_land", actor_on_land)
+    RegisterScriptCallback("actor_on_jump", actor_on_jump)
+    RegisterScriptCallback("actor_item_to_ruck", check_exo_suit)
+    RegisterScriptCallback("actor_item_to_slot", check_exo_suit)
+	RegisterScriptCallback("actor_on_item_drop",check_exo_suit)
+    RegisterScriptCallback("on_option_change", on_option_change)
+    on_option_change()
+end

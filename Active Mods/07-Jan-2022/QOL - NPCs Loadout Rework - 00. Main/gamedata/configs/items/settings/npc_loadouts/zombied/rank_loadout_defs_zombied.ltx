@@ -1,0 +1,21 @@
+[zombied_novice]
+primary = zombied_novice_primary
+
+[zombied_trainee]:zombied_novice
+
+[zombied_experienced]:zombied_trainee
+primary = zombied_experienced_primary
+
+[zombied_professional]:zombied_experienced
+
+[zombied_veteran]:zombied_professional
+primary = zombied_veteran_primary
+
+[zombied_expert]:zombied_veteran
+
+[zombied_master]:zombied_expert
+primary = zombied_master_primary
+
+[zombied_legend]:zombied_master
+
+#include "loadout_*.ltx"

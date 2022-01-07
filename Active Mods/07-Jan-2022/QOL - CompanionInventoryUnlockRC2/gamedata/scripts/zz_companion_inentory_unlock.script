@@ -1,0 +1,26 @@
+--[[
+Companion carry weight unlimiter.
+18JAN2021
+This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License
+Author: RavenAscendant
+--]]
+
+
+
+axrbase = axr_companions.is_assigned_item
+
+
+
+function axr_companions.is_assigned_item(npc_id, item_id)
+	for id,squad in pairs(axr_companions.companion_squads) do
+		if (squad and squad.commander_id) then
+			for k in squad:squad_members() do
+				if k and k.id == npc_id then
+					return true
+				end
+			end
+		end
+	end	
+	
+	return axrbase(npc_id, item_id)
+end

@@ -1,0 +1,31 @@
+Version: 1.0.4
+by Vintar
+for Anomaly 1.5.1
+
+
+Changes and expands many aspects of bounty squads to be both more logical and more fair.
+
+
+
+- Bounty squads now only have a chance to spawn during each update. The chance is initially very low, but increases dramatically for a given faction if the player kills STALKERs of that faction. The more faction members the player kills, the higher the chance that faction will send bounty squads.
+- Bounty squads only spawn from locations owned by the bounty faction - they no longer spawn out of thin air or in hostile territory. They also only spawn if the actor is within linked-level range of their territories. Thus, being within enemy territory makes it more likely that that faction can potentially send a bounty squad after you.
+- Bounty squads stop targeting the player during sleep.
+- Bounty squad rank is dependent on the player's rank. Rookie players will get rookie bounty squads. Only master and legendary stalkers get the geared-up alpha squads now.
+- All factions can potentially send bounty squads after the player.
+- Northern levels are open for bounty squads to track you. This is mainly so that Monolith bounty squads actually care about you passing through their territory.
+- Being in a vacant safe zone no longer prevents bounty squads from attacking you. If you want them to back off, you need to stay in a spot with plenty of allies.
+- Greater maximum amount of potential bounty squads at each rank/rep. Bounty squads will have a nonzero chance to appear starting with 'bad' reputation, or 'professional' rank.
+- MCM customization: control many parameters through the MCM to tailor bounty squad functionality to your liking. Other settings can be modified in plugins/bounty_squads.ltx
+
+
+Version Log:
+
+1.0.4 - Added extra callback to increase the certainty that bounty squads stop attacking during sleep. Scripted squads (traders, mechanics, initial 'story' squads) now count towards bounty squad deterrence. Companion squads no longer stop bounty squads from targeting the player. Small code optimizations.
+1.0.3 - Fixed issue where faction multipliers could sometimes be forgotten across game save/load. Whether the actor is considered safe no longer depends on an arbitrary list of specific smart terrains, but whether the actor is on any smart terrain occupied by allies hostile to the bounty squad.
+1.0.2 - Fixed crash from nonexistent 'experienced' squads.
+1.0.1 - Bounty squads stop targeting the player during sleep. Fixed attack targeting logic, was reversed.
+
+
+
+
+

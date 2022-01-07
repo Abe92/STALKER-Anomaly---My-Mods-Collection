@@ -1,0 +1,29 @@
+[renegade_novice]
+primary = renegade_novice_primary
+; secondary = renegade_experienced_secondary
+
+[renegade_trainee]:renegade_novice
+primary = renegade_trainee_primary
+
+[renegade_experienced]:renegade_trainee
+primary = renegade_experienced_primary
+; secondary = renegade_experienced_secondary
+
+[renegade_professional]:renegade_experienced
+primary = renegade_professional_primary
+
+[renegade_veteran]:renegade_professional
+primary = renegade_veteran_primary
+secondary = renegade_veteran_secondary
+
+[renegade_expert]:renegade_veteran
+primary = renegade_expert_primary
+
+[renegade_master]:renegade_expert
+primary = renegade_master_primary
+secondary = renegade_master_secondary
+
+[renegade_legend]:renegade_master
+primary = renegade_legend_primary
+
+#include "loadout_*.ltx"

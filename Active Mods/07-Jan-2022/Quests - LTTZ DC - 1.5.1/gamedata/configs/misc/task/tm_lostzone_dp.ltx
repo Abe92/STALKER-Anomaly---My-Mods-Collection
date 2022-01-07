@@ -1,0 +1,28 @@
+;==============================================================
+;
+; TASKS PROVIDED FOR LOST TO THE ZONE: DARK PRESENCE
+;	Anomaly 1.5 - Lost to the Zone: Dark Presence
+;
+;	Made by: SarisKhan
+;	Last revised: 25 October 2020
+;
+;==============================================================
+
+;=================Dark Presence Storyline Quest===========================
+; Dark Presence Task-
+[lttz_dp_noosphere_voice]
+icon = ui_inGame2_D_gonets_pravosudiya
+prior = 195
+storyline = true
+
+title = lttz_dp_noosphere_voice_name
+target = {+x18_dark_presence_final_dead +mil_greh_radogost_dark_presence_friend} mil_greh_radogost, {+unlock_x18 =actor_on_level(l04u_labx18)} nil, {+unlock_x18} val_space_restrictor_to_labx18, {+dar_greh_hostile_squad_dead} dar_zombied_soldiers_squad, {+mil_greh_radogost_dark_presence -dar_greh_hostile_squad_dead} dar_greh_hostile_squad, mil_greh_radogost
+status_functor = special_steps_for_lostzone_tasks
+descr = {+x18_dark_presence_final_dead +mil_greh_radogost_dark_presence_friend} lttz_dp_noosphere_voice_text6, {+unlock_x18 =actor_on_level(l04u_labx18)} lttz_dp_noosphere_voice_text5, {+unlock_x18} lttz_dp_noosphere_voice_text4, {+mil_greh_radogost_dark_presence =actor_on_level(l04_darkvalley)} lttz_dp_noosphere_voice_text3, {+mil_greh_radogost_dark_presence} lttz_dp_noosphere_voice_text2, lttz_dp_noosphere_voice_text
+stage_complete = 7
+
+on_init = %+lttz_dp_active%
+on_complete = %+lttz_dp_noosphere_voice_complete -lttz_dp_active%
+condlist_0 = {+x18_dark_presence_final_dead +mil_greh_radogost_dark_presence_friend +mil_greh_radogost_dark_presence_final} complete
+condlist_1 = {+x18_dark_presence_final_dead -mil_greh_radogost_dark_presence_friend} complete
+condlist_2 = {-mil_greh_radogost_dark_presence +mil_greh_radogost_dead} fail

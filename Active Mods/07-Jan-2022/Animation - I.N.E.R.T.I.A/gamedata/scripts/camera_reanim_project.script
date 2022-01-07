@@ -1,0 +1,85 @@
+local zoom_flag = true
+local jump_flag = true
+local lean_flag = true
+local move_flag = true
+local crouch_flag = true
+
+function on_option_change()
+	jump_flag = camera_reanim_project_mcm.get_config("jump_land")
+	zoom_flag = camera_reanim_project_mcm.get_config("wpn_ads")
+	lean_flag = camera_reanim_project_mcm.get_config("leaning")
+	move_flag = camera_reanim_project_mcm.get_config("moving")
+	crouch_flag = camera_reanim_project_mcm.get_config("crouch")
+end
+
+local function on_key_press(key)
+	if lean_flag and (key == bind_to_dik(key_bindings.kR_LOOKOUT)) then
+		level.add_cam_effector("camera_effects\\lean_right_crp.anm", 1903, false, "")
+	end
+	if lean_flag and (key == bind_to_dik(key_bindings.kL_LOOKOUT)) then
+		level.add_cam_effector("camera_effects\\lean_left_crp.anm", 1902, false, "")
+	end
+	if crouch_flag and (key == bind_to_dik(key_bindings.kCROUCH)) then
+		level.add_cam_effector("camera_effects\\crouch_crp.anm", 1900, false, "")
+	end
+end
+
+local function on_key_release(key)
+	if lean_flag and (key == bind_to_dik(key_bindings.kR_LOOKOUT)) then
+		level.add_cam_effector("camera_effects\\lean_right_crp.anm", 1903, false, "")
+	end
+	if lean_flag and (key == bind_to_dik(key_bindings.kL_LOOKOUT)) then
+		level.add_cam_effector("camera_effects\\lean_left_crp.anm", 1902, false, "")
+	end
+	if crouch_flag and (key == bind_to_dik(key_bindings.kCROUCH)) then
+		level.add_cam_effector("camera_effects\\stand_crp.anm", 1901, false, "")
+	end
+end
+
+local function actor_on_land(fall_speed)
+	if jump_flag and (fall_speed > 5) then
+		local rand = math.random(1,2)
+		level.add_cam_effector("camera_effects\\landing_crp" .. rand .. ".anm", 1905, false, "")
+	end
+end
+
+local function actor_on_jump()
+	if jump_flag then
+	level.add_cam_effector("camera_effects\\jump_crp.anm", 1906, false, "")
+	end
+end
+
+local function actor_on_weapon_zoom_in()
+	if zoom_flag then
+		level.add_cam_effector("camera_effects\\zoom_crp.anm", 1908, false, "")
+	end
+end
+
+local function actor_on_weapon_zoom_out()
+	if zoom_flag then
+		level.add_cam_effector("camera_effects\\zoom_crp.anm", 1907, false, "")
+	end
+end
+
+function actor_on_footstep()
+	if move_flag then
+		if (db.actor.power < 0.25) then
+			level.add_cam_effector("camera_effects\\tired_crp.anm", 1910, false, "")
+		elseif IsMoveState("mcSprint") then
+			level.add_cam_effector("camera_effects\\sprint_crp.anm", 1909, false, "")
+		else level.add_cam_effector("camera_effects\\move_crp.anm", 1904, false, "")
+		end
+	end
+end
+
+function on_game_start()
+	RegisterScriptCallback("actor_on_footstep", actor_on_footstep)
+	RegisterScriptCallback("actor_on_weapon_zoom_out", actor_on_weapon_zoom_out)
+	RegisterScriptCallback("actor_on_weapon_zoom_in", actor_on_weapon_zoom_in)
+	RegisterScriptCallback("actor_on_jump",actor_on_jump)
+	RegisterScriptCallback("actor_on_land",actor_on_land)
+	RegisterScriptCallback("on_key_press",on_key_press)
+	RegisterScriptCallback("on_key_release",on_key_release)
+	RegisterScriptCallback("on_option_change", on_option_change)
+	on_option_change()
+end

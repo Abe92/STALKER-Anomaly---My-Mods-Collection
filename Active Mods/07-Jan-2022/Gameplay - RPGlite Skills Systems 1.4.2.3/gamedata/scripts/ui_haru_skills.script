@@ -1,0 +1,146 @@
+local translate_string = game.translate_string
+local string_format = string.format
+local menu_key = DIK_keys.DIK_K
+local math_floor = math.floor
+local get_config = haru_skills_mcm.get_config
+local mcm_keybinds = ui_mcm and ui_mcm.key_hold
+local modifier = 0
+
+local K_Timer   = false
+function keybind_pass()
+	if (K_Timer and (time_global() > K_Timer + 200)) or (not K_Timer) then
+		K_Timer = time_global()
+		return true
+	end
+	return false
+end
+
+GUI = nil
+function on_key_release(key)
+    if key ~= menu_key then return end
+    if not mcm_keybinds then
+        start()
+        return
+    end
+    if ui_mcm.get_mod_key(modifier) then
+        start()
+    end
+end
+
+function start()
+    hide_hud_inventory()
+
+    if (not GUI) then
+        GUI = UIHarukaSkills()
+    end
+
+    if (GUI) and (not GUI:IsShown()) and keybind_pass() then
+        GUI:ShowDialog(true)
+        Register_UI("UIHarukaSkills", "ui_haruka_skills")
+    end
+end
+
+class "UIHarukaSkills" (CUIScriptWnd)
+
+function UIHarukaSkills:__init() super()
+    self:InitControls()
+end
+
+function UIHarukaSkills:__finalize()
+end
+
+local languages = {
+	["eng"] = true,
+	["rus"] = true
+}
+
+function UIHarukaSkills:InitControls()
+    self:SetAutoDelete(true)
+    self.xml = CScriptXmlInit()
+    local xml = self.xml
+    xml:ParseFile("ui_haruka_skills.xml")
+    self.dialog = xml:InitStatic("skills", self)
+    local background = xml:InitStatic("skills:background", self.dialog)
+	local lang = ui_options.curr_localization()
+	lang = languages[lang] and lang or "eng"
+    local cap_main = xml:InitStatic("skills:cap_main_" .. lang, self.dialog)
+	scale_ui(cap_main, true, background, "center")
+    self.scroll = xml:InitScrollView("skills:scroll", self.dialog)
+    self.scroll:Clear()
+    local skills_levels = haru_skills.skills_levels
+    for skill, stats in pairs(skills_levels) do
+        local _st = xml:InitStatic("skills:st", nil)
+        local name = xml:InitStatic("skills:name", _st)
+        local level_percent = xml:InitStatic("skills:percent", _st)
+		xml:InitStatic("skills:exp_bar_back", _st)
+        local exp_bar = xml:InitProgressBar("skills:exp_bar", _st)
+        local prev_requirement = stats.prev_requirement
+        local progress = (stats.experience - prev_requirement)/(stats.requirement - prev_requirement)
+        name:TextControl():SetText(string_format("%s - lvl. %s", translate_string("st_player_skills_" .. skill), stats.current_level))
+        exp_bar:SetProgressPos(progress)
+        level_percent:TextControl():SetText(string_format("%s%%", clamp((math_floor(progress * 100)),0,100)))
+        self.scroll:AddWindow(_st, true)
+        _st:SetAutoDelete(true)
+    end
+end
+
+function UIHarukaSkills:OnKeyboard(dik, keyboard_action)
+	local res = CUIScriptWnd.OnKeyboard(self,dik,keyboard_action)
+	if (res == false) then
+		local bind = dik_to_bind(dik)
+		if keyboard_action == ui_events.WINDOW_KEY_PRESSED then
+			if dik == menu_key then
+				if keybind_pass() then
+					self:Close()
+				end
+			elseif bind == key_bindings.kQUIT then
+				self:Close()
+			end
+		end
+	end
+	return res
+end
+
+function scale_ui(ele, adjust_x, anchor, anchor_point, parent_width)
+	p_width = parent_width or 1024
+	p_center = p_width/2
+	width = ele:GetWidth()
+	pos = ele:GetWndPos()
+	anchorpos = {}
+	anchorpos.left = pos.x
+	anchorpos.right = anchorpos.left + width
+	anchorpos.center = anchorpos.left + width/2
+	ratio = (device().height / device().width) / (768 / 1024)
+	xadjust = anchorpos.left
+	if adjust_x then
+		if anchor_point == "right" then
+			xadjust = p_width - (p_width - (anchor and anchorpos[anchor] or anchorpos.left))*ratio
+		elseif anchor_point == "center" then
+			xadjust = p_center - (p_center - (anchor and anchorpos[anchor] or anchorpos.left))*ratio
+		else
+			xadjust = ratio * (anchor and anchorpos[anchor] or anchorpos.left)
+		end
+	end
+	ele:SetWndSize(vector2():set(ele:GetWidth() * ratio, ele:GetHeight()))
+	ele:SetWndPos( vector2():set(xadjust , pos.y ) )
+end
+
+function UIHarukaSkills:Close()
+	self:HideDialog()
+	self:Show(false)
+    GUI = nil
+	Unregister_UI("UIHarukaSkills")
+end
+
+function on_option_change(mcm)
+    if mcm then
+        menu_key = get_config("ui_keybind")
+        modifier = get_config("modifier")
+    end
+end
+
+function on_game_start()
+	RegisterScriptCallback("on_key_release",on_key_release)
+    RegisterScriptCallback("on_option_change", on_option_change)
+    on_option_change(mcm_keybinds)
+end
