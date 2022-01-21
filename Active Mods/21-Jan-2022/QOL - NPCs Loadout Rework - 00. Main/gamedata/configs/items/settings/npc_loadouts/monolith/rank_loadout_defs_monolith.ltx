@@ -1,0 +1,31 @@
+[monolith_novice]
+primary = monolith_novice_primary
+secondary = monolith_veteran_secondary
+
+[monolith_trainee]:monolith_novice
+primary = monolith_trainee_primary
+
+[monolith_experienced]:monolith_trainee
+primary = monolith_experienced_primary
+secondary = monolith_veteran_secondary
+
+[monolith_professional]:monolith_experienced
+primary = monolith_professional_primary
+
+[monolith_veteran]:monolith_professional
+primary = monolith_veteran_primary
+secondary = monolith_veteran_secondary
+extra = monolith_veteran_extra
+
+[monolith_expert]:monolith_veteran
+primary = monolith_expert_primary
+
+[monolith_master]:monolith_expert
+primary = monolith_master_primary
+secondary = monolith_master_secondary
+
+[monolith_legend]:monolith_master
+primary = monolith_legend_primary
+secondary = monolith_legend_secondary
+
+#include "loadout_*.ltx"

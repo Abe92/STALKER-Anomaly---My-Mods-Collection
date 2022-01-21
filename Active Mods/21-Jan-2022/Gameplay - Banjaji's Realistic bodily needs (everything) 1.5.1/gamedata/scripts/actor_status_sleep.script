@@ -1,0 +1,490 @@
+-- Changed for IMM	by Faustle (2018)
+-- Edited by Tronex
+-- Date: 2018/11/7
+-- Sleep deprivation
+
+-- 2022.01.05
+-- Banjaji's Realistic bodily needs
+-- * Increased starting effects from gray to yellow indicator
+-- * Added certain passing out at max sleepiness
+-- * Scaled max sleepiness to 3 days (originally 30.86 h = 111111 s)
+-- * Added rest map (rest effectiveness is log-norm so rest gained is like 
+-- slanted "S".)
+-- * Added hallucinations when at red indicator
+-- * (Re-?)added chance to pass out (previously was certain)
+-- * Sleepiness has smaller impact on endurance. You are able to walk when dead-tired.
+-- * Changed eat_sleepiness value meaning in LTX. Now eat_sleepiness = 1 is 1 h equivalent.
+-- Nominal amount: 8 h of sleep per day (excercise)
+-- 20 h = bad feeling, 3 days = certain pass out
+-- 72 h = 10000 units => 1 h = 1.667 units
+-- Sleep increase = 0.03858 units/s = 138.95 units/h
+-- Test in Anomaly v1.5.1: real-life 1 s = in-game 6 s
+
+-- "Immersive sleep" did similar thing with different values and goals. Check it out too!
+
+local last_sleep, last_sleep_chk, pwr_chk
+local feature_state
+--[[ original values
+local up_sleep				= 27 -- step, 324 units/h
+local in_hour				= 1400 -- amount decreased every sleep hour
+local start_blur_1 			= 5000 -- value at which gray indicator appear
+local start_blur_2 			= 6250 -- value at which yellow indicator appear
+local start_blur_3 			= 7500 -- value at which orange indicator appear
+local start_blur_4 			= 8750 -- value at which red indicator appear
+local force 				= 9000 -- value at which player is forced to sleep
+local force_slp				= 10001
+
+local sleep_chk				= 300 -- amount of in-game seconds where indicator value increase
+local itn_mul 				= 0.001
+local eat_sleepiness_mul	= 1000
+local pwr_rate,rng_factor 	= -0.00010, 0.08
+--]]
+
+
+-- Runs 202 times for 16 hours. Adding up to 2222.
+local up_sleep				= 10.9954 -- step, 138.95 units/h
+-- If in_hour == -1 then uses Banjaji's rest map. Otherwise linearly subtracts in_hour units from 
+-- last_sleep for every h slept.
+local in_hour				= -1 -- Uses Banjaji's rest map
+--local in_hour				= 277.778 -- amount decreased every sleep hour
+
+local start_blur_1 			= 2222 -- value at which gray indicator appears, 16 h
+local start_blur_2 			= 2778 -- value at which yellow indicator and effects appear, 20 h
+local start_blur_3 			= 4167 -- value at which orange indicator appears, 30 h
+local start_blur_4 			= 5556 -- value at which red indicator appears, 40 h
+local force 				= 6667 -- value at which there's a chance player is forced to sleep, 48 h
+local strong_effects		= 8333 -- value at which annoying effects appy, 60 h
+local force_slp				= 10000 -- player is forced to sleep, 72 h
+local max_time				= 72	-- in-game time in h which corresponds to 10000 units
+
+local sleep_chk				= 285 -- amount of in-game seconds where indicator value increase, 4.75 min
+local sleep_chance			= 5		-- chance to pass out when last_sleep is over force
+local hallucination_chance	= 33	-- chance to spawn phantom as a hallucination when red
+local itn_mul 				= 1.25e-4 -- multiplier for effector strength. 
+
+--local eat_sleepiness_mul	= 1000 * 138.95 / 324 -- corrected so that original amount of hours is added/subtracted
+-- when consuming - use this if you don't want to change LTX files 
+local eat_sleepiness_mul	= 138.95 -- 1 unit in LTX is 1 h in-game time awake. Originally 1 unit in LTX was 3.086 h in-game time awake.
+-- satiety_power_v == (force_slp - start_blur_2_sleep) * pwr_rate * rng_factor_sleep + (force_slp - start_blur_2_drink) * pwr_rate * rng_factor_drink + walk_power + satiety_w
+-- satiety_power_v == pwr_rate * ((force_slp - start_blur_2_sleep) * rng_factor_sleep + (force_slp - start_blur_2_drink) * rng_factor_drink) + walk_power + satiety_w
+-- Weights: rng_factor_sleep == 0.2, rng_factor_drink == 0.8
+-- pwr_rate = (satiety_power_v - walk_power - satiety_w / ((force_slp - start_blur_2_sleep) * rng_factor_sleep + (force_slp - start_blur_2_drink) * rng_factor_drink) = 1.5e-7
+local pwr_rate,rng_factor 	= 1e-6, -1 -- values for stamina per in-game second
+
+
+local in_hour_const			= in_hour -- constant
+local units_to_hours_mul	= max_time / force_slp	-- time from units to hours multiplier, constant
+
+function create()
+	printdbg("- Sleep deprivation | Enabled")
+	feature_state = true
+	last_sleep 				= last_sleep or 0
+	RegisterScriptCallback("actor_on_update",actor_on_update)
+	RegisterScriptCallback("actor_on_item_use",actor_on_item_use)
+	RegisterScriptCallback("actor_on_sleep",actor_on_sleep)
+	actor_status.add_indicator("Sleep",{
+		index= 4,
+		typ= "state",
+		functor= {"actor_status_sleep","get_sleep_deprivation",true},
+		icon= "ui_inGame2_indicator_sleep",
+		background= "ui_inGame2_indicator_slot",
+		anim_icon= false,
+		anim_bk= false,
+	})
+end 
+
+function destroy()
+	printdbg("- Sleep deprivation | Disabled")
+	feature_state = false
+	last_sleep = nil
+	UnregisterScriptCallback("actor_on_update",actor_on_update)
+	UnregisterScriptCallback("actor_on_item_use",actor_on_item_use)
+	UnregisterScriptCallback("actor_on_sleep",actor_on_sleep)
+	alife_storage_manager.get_state().sleep = nil
+	actor_status.add_indicator("Sleep",nil)
+end 
+
+function toggle_feature(val)
+	if val and (not feature_state) then
+		create()
+	elseif (not val) and feature_state then
+		destroy()
+	end
+end
+
+
+function test_blur()
+	--actor_menu.set_msg(1,("Sleep: "..tostring(actor_status_sleep.get_last_sleep())),4)	-- debug
+	
+	-- Deletes effector when gray or nothing
+	if (last_sleep < start_blur_2) then
+		level.remove_pp_effector(39568)	
+	-- if atleast yellow indicator then
+	else
+		-- 2 different blurs for variety
+		local blur_effects = {"yantar_underground_psi.ppe", "total_recall.ppe"}
+		local blur = blur_effects[math.random(2)]
+		-- generate blur
+		level.add_pp_effector(blur, 39568, false)	-- filename, random ID, to play endlessly
+		-- set blur strength
+		level.set_pp_effector_factor(39568, (last_sleep-start_blur_2) * itn_mul) -- the ID, strength (0...1, lower or larger gets capped)
+		
+		-- Max tiredness and certain passing out. Gets psy-damage.
+		if (not db.actor:has_info("actor_is_sleeping") == true) and (last_sleep >= force_slp) then
+			db.actor:give_info_portion("force_slp2")
+			force_sleep()
+			arszi_psy.set_psy_health(db.actor:cast_Actor():conditions():GetPsyBar() - 0.4)	-- psy-damage
+		-- Chance to pass out
+		elseif (not db.actor:has_info("actor_is_sleeping") == true) and (last_sleep >= force) and (math.random(100) <= sleep_chance) then
+			db.actor:give_info_portion("force_slp2")
+			force_sleep()
+		end
+		
+		-- endless loop of blur after 60 h
+		if last_sleep >= strong_effects then
+			level.add_pp_effector("yantar_underground_psi.ppe", 40000, true) -- the other one is quite annoying on loop
+			level.set_pp_effector_factor(40000, 1)
+		else
+			level.remove_pp_effector(40000)	
+		end
+			
+		-- Chance to hallucinate if indicator is red. Chance is 2x higher after strong effects.
+		if ((last_sleep >= strong_effects) and (math.random(100) <= hallucination_chance * 2)) or ((last_sleep >= start_blur_4) and(math.random(100) <= hallucination_chance)) then
+			hallucinate(3)
+		end
+	end
+end
+
+-- Spawn hallucinations (phantoms)
+function hallucinate(max_hallucinations)
+	local phantom_sections = {"m_phantom_bloodsucker", "m_phantom_tushkano", "m_phantom_controller", "m_phantom_zombi", "m_phantom_snork", 
+						"m_phantom_boar", "m_phantom_flesh", "m_phantom_dog", "m_phantom_pseudodog", "m_phantom_cat", "m_phantom_chimera", "m_phantom_gigant"}
+	-- 1 to max_hallucinations hallucinations
+	for i = 1, math.random(max_hallucinations) do
+		local section = phantom_sections[math.random(12)] -- picks one out of 12 phantoms
+		local location = vector() -- Generate empty data type
+		location.x = db.actor:position().x + math.random(-5,5)
+		location.y = db.actor:position().y + math.random(-0.5,4)	-- this is height
+		location.z = db.actor:position().z + math.random(-5,5)
+		phantom_manager.spawn_dynamic_phantom(section,location,db.actor:level_vertex_id())
+	end
+end
+
+function force_sleep()
+	ui_sleep_dialog.sleep_forced()
+	--actor_menu.set_msg(1, game.translate_string("st_sleep_deprived"),5)
+	disable_info("force_slp2")
+end
+
+function get_sleep_deprivation(visual)
+	if (not last_sleep) then
+		return 0
+	end
+	
+	if visual then -- indicator
+		if last_sleep <= start_blur_1 then return 0
+		elseif last_sleep <= start_blur_2 then return 1
+		elseif last_sleep <= start_blur_3 then return 2
+		elseif last_sleep <= start_blur_4 then return 3
+		else return 4
+		end
+	end
+	return clamp( normalize(last_sleep, 0, force_slp) , 0 , 1)
+end
+
+
+
+
+
+-- Banjaji's rest map (primarily https://doi.org/10.1093/sleep/26.2.117 but also https://doi.org/10.1038/srep35812). Long story short (1st article):
+-- sleep deprivation effects are linear according to fig 4B and grow with cumulative exess wakefulness (how many extra h have you been awake instead of sleeping).
+-- The rest function itself maps rest needed as a linear function (you need 1 h of sleep for every 2 h of awake time) and sleep hour effectiveness according to log-norm function 
+-- (cumulative amount is like a slanted "S", see Wikipedia) dependent on needed rest amount and time slept. 
+-- Middle hours of sleep are the most effective but there isn't a point to cut sleep short and sleep again for short amount because first hours aren't too effective either.
+-- For example after 36 h of being awake you'll need 18 h of sleep. After 4, 9 or 14 h of sleep you have rested the equivalent of 1, 19 or 31 h of being awake. Short few 
+-- hour naps are effective only if you haven't been awake for too long (eg. more than 16 h).
+function get_rest_amount(time_awake, time_slept, units_to_hours_mul)
+	-- Wrong or weird variables
+	if (time_awake == nil) or (time_slept == nil) or (time_slept == 0) then return 0
+	-- if you sleep atleast half the time of being awake you are fully rested
+	elseif time_awake / 2 <= time_slept then return time_awake
+	end
+	
+	time_awake = time_awake * units_to_hours_mul -- time from units to hours
+	local time_needed = time_awake / 2 -- time in h needed to fully rest
+	local rest_amount = 0	-- amount of total rest gained
+	local sigma = 0.4	-- log-norm skewedness
+	local mu = math.log(time_needed / 2 + sigma^2 / 2) -- log-norm mean aka. hour of most rest
+	
+	-- Rest gained from sleep is (like slanted/skewed "S", see Wikipedia) the cumulative (sum) distribution function of log-norm function.
+	for current_hour = 1, time_slept, 1 do
+		-- Rest effectivenes for certain hour is a log_norm function (shape is like skewed bell and arguments are current_hour and time_awake (through time_needed)).
+		rest_amount = rest_amount + time_awake / (current_hour * sigma * math.sqrt(2 * math.pi)) * math.exp(-(math.log(current_hour) - mu)^2 / (2 * sigma^2))
+	end
+	return rest_amount / units_to_hours_mul -- time from hours to units
+end
+-------------------------------------------------------------------
+-- Callbacks
+-------------------------------------------------------------------
+function save_state(m_data)
+	if (USE_MARSHAL) and feature_state then
+		local sleep = {}
+		sleep.last_sleep = last_sleep
+		sleep.chk_sleep = last_sleep_chk and utils_data.CTime_to_table(last_sleep_chk)
+		
+		m_data.sleep = sleep
+		printdbg("# SAVING: Sleep deprivation | last_sleep: %s",tostring(last_sleep))
+	end
+end
+
+function load_state(m_data)
+	local sleep = m_data.sleep
+	if sleep then
+		last_sleep = sleep.last_sleep or 0
+		last_sleep_chk = sleep.chk_sleep and utils_data.CTime_from_table(sleep.chk_sleep) or nil
+		printdbg("# LOADING: Sleep deprivation | last_sleep: %s",tostring(last_sleep))
+	end
+end
+
+function actor_on_sleep(hours)
+
+	-- if god mode console command is enabled nothing happens
+	if (get_console_cmd(1,"g_god")) then
+		return
+	end
+	
+	-- If in_hour == -1 then uses Banjaji's rest map. Otherwise linearly subtracts in_hour units from last_sleep for every h slept.
+	if in_hour == -1 then
+		local rest_amount = get_rest_amount(last_sleep, hours, units_to_hours_mul) or 0
+		last_sleep = last_sleep and math.ceil(last_sleep - rest_amount) or 0
+		--printdbg("/ Sleep deprivation | Reduced sleepiness by sleeping: %s - old sleepiness level: %s", rest_amount, last_sleep)
+	else
+		last_sleep = last_sleep and math.ceil(last_sleep - (hours * in_hour) or 0 ) or 0
+		--printdbg("/ Sleep deprivation | Reduced sleepiness by sleeping: %s - old sleepiness level: %s", hours*(in_hour or in_hour_const), last_sleep)
+	end
+	if (last_sleep < 0) then
+		last_sleep = 0
+	elseif (last_sleep > force_slp) then
+		last_sleep = force_slp
+	end
+end
+
+function actor_on_item_use(item)
+
+	-- if god mode console command is enabled nothing happens
+	if (get_console_cmd(1,"g_god")) then
+		return
+	end
+	
+	local sec = item:section()
+	local eat_sleepiness = (ini_sys:r_float_ex(sec,"eat_sleepiness") or 0) * eat_sleepiness_mul 
+	
+	if eat_sleepiness and (eat_sleepiness ~= 0) then
+		--printdbg("/ Sleep deprivation | item used: %s - old sleepiness level: %s - sleepiness level change: %s", sec, last_sleep, eat_sleepiness)
+		last_sleep = last_sleep + eat_sleepiness
+		if (last_sleep < 0) then
+			last_sleep = 0
+		elseif (last_sleep > force_slp) then
+			last_sleep = force_slp
+		end
+		if eat_sleepiness > 75 then test_blur() end -- If check since otherwise you'd pass out from every sip of water, 75 units == ca 0.5 h
+	end
+end
+
+function actor_on_update()
+	--printf("last_sleep_chk=%s last_sleep=%s",last_sleep_chk and game.get_game_time():diffSec(last_sleep_chk) or "nil",last_sleep)
+	
+	-- God mode console command enabled.
+	if (get_console_cmd(1,"g_god")) then
+		return true
+	end
+	
+	local curr_time = game.get_game_time() -- C# class (or equivalent) from engine, not a number
+	
+	if last_sleep > start_blur_2 then
+		local tg = time_global()	-- updates 1000 times per second
+		if (pwr_chk == nil or tg > pwr_chk) then 
+			if (db.actor.power > 0) then
+			--printdbg("Sleep: "..tostring(pwr_rate * (last_sleep - force_slp / 2) * rng_factor / 10*6))
+				db.actor:change_power(pwr_rate * (last_sleep - force_slp / 2) * rng_factor / 10*6) -- / 10 because 10x per second  but * 6 to convert to in-game second 
+				--db.actor:change_health(pwr_rate*((last_sleep-start_blur_2)*rng_factor)/100)
+			end
+			pwr_chk = tg + 100 -- about 10x per real life second
+		end
+	end
+	
+	if (last_sleep_chk and curr_time:diffSec(last_sleep_chk) < sleep_chk) then 
+		return 
+	end
+	
+	last_sleep_chk = curr_time
+	
+	last_sleep = last_sleep + up_sleep
+	
+	if (last_sleep < 0) then
+		last_sleep = 0
+	elseif (last_sleep > force_slp) then
+		last_sleep = force_slp
+	end
+	
+	test_blur()
+end
+
+function on_game_start()
+	
+	local function on_game_load()
+		if game_difficulties.get_game_factor("sleep") then
+			create()
+		end
+	end
+	--RegisterScriptCallback("on_game_load",on_game_load)
+	RegisterScriptCallback("load_state",load_state)
+	RegisterScriptCallback("save_state",save_state)
+end
+
+-------------------------------------------------------------------
+-- Other functions and patches
+-------------------------------------------------------------------
+
+-- Functions to read/write constants from another script
+function get_last_sleep()
+	return last_sleep or 0
+end
+function get_up_sleep()
+	return up_sleep or 0
+end
+function get_in_hour()
+	return in_hour or 0
+end
+function get_start_blur_1()
+	return start_blur_1 or 0
+end
+function get_start_blur_2()
+	return start_blur_2 or 0
+end
+function get_start_blur_3()
+	return start_blur_3 or 0
+end
+function get_start_blur_4()
+	return start_blur_4 or 0
+end
+function get_force()
+	return force or 0
+end
+function get_strong_effects()
+	return strong_effects or 0
+end
+function get_force_slp()
+	return force_slp or 0
+end
+function get_max_time()
+	return max_time or 0
+end
+function get_sleep_chk()
+	return sleep_chk or 0
+end
+function get_itn_mul()
+	return itn_mul or 0
+end
+function get_hallucination_chance()
+	return hallucination_chance or 0
+end
+function get_eat_sleepiness_mul()
+	return eat_sleepiness_mul or 0
+end
+function get_pwr_rate()
+	return pwr_rate or 0
+end
+function get_sleep_chance()
+	return sleep_chance or 0
+end
+
+function set_last_sleep(x)
+	last_sleep = x
+end
+function set_up_sleep(x)
+	up_sleep = x
+end
+function set_in_hour(x)
+	in_hour = x
+end
+function set_start_blur_1(x)
+	start_blur_1 = x
+end
+function set_start_blur_2(x)
+	start_blur_2 = x
+end
+function set_start_blur_3(x)
+	start_blur_3 = x
+end
+function set_start_blur_4(x)
+	start_blur_4 = x
+end
+function set_force(x)
+	force = x
+end
+function set_strong_effects(x)
+	strong_effects = x
+end
+function set_force_slp(x)
+	force_slp = x
+end
+function set_max_time(x)
+	max_time = x
+end
+function set_sleep_chk(x)
+	sleep_chk = x
+end
+function set_itn_mul(x)
+	itn_mul = x
+end
+function set_hallucination_chance(x)
+	hallucination_chance = x
+end
+function set_eat_sleepiness_mul(x)
+	eat_sleepiness_mul = x
+end
+function set_pwr_rate(x)
+	pwr_rate = x
+end
+function set_sleep_chance(x)
+	sleep_chance = x
+end
+
+
+
+
+-- Tkcrits' Immersive sleep
+local comfy = 0
+function get_last_sleep()
+	return last_sleep or 0
+end
+function set_rest_per_hour(rest)
+	in_hour = rest
+end
+function get_sleep_deprivation_level()
+	local sleep_level = 0
+	if (not last_sleep) then
+		return 0
+	end
+	
+	if last_sleep > start_blur_1 then sleep_level = 1
+	elseif last_sleep > start_blur_2 then sleep_level = 2
+	elseif last_sleep > start_blur_3 then sleep_level = 3
+	elseif last_sleep > start_blur_4 then sleep_level = 4
+	end
+
+	return sleep_level
+end
+
+
+--  Bvcx's "Hunger, thirst, sleepiness bars" functions
+function get_sleep_blur_4()
+	return start_blur_4 or 0
+end
+
+
+-- HyperionSTG's Exact satiety, hydratation and sleepiness status, Banjaji's patch
+function get_hours_to_full_rested()
+	return string.format( "%.2f", last_sleep / 2 * units_to_hours_mul)
+end

@@ -1,0 +1,53 @@
+local time_factor = 6 -- Default time_factor
+local function get_time_elapsed()
+    return game.get_game_time():diffSec(level.get_start_time()) / time_factor
+end
+
+local weather_manager_init = level_weathers.WeatherManager.__init
+level_weathers.WeatherManager.__init = function(self)
+    weather_manager_init(self)
+    self.cachedWeather = nil
+end
+
+local weather_manager_select = level_weathers.WeatherManager.select_weather
+level_weathers.WeatherManager.select_weather = function(self, now)
+    if not level_weathers.bLevelUnderground and self.cachedWeather then
+        printdbg("-level_weathers: restore weather from cache %s", self.cachedWeather)
+        level.set_weather(self.cachedWeather, true)
+        self.weather_file = self.cachedWeather
+        self:set_brightness_boosts()
+        self.cachedWeather = nil
+        return
+    elseif level_weathers.bLevelUnderground then
+        local undergroundTime = (get_time_elapsed() - GetEvent("underground_time"))/60
+        if (undergroundTime > 10) then -- start allowing cachedWeather to transition after player has been underground for 10 minutes.
+            self.cachedWeather = (self.presets[self:get_next_weather_cycle(self.cachedWeather)] and random_key_table(self.presets[self:get_next_weather_cycle(self.cachedWeather)]))
+        end
+    end
+
+    return weather_manager_select(self, now)
+end
+
+local weather_manager_load = level_weathers.WeatherManager.load_state
+level_weathers.WeatherManager.load_state = function(self, m_data)
+    if not (m_data) then 
+        return
+    end
+    if not level_weathers.bLevelUnderground then
+        self.cachedWeather = m_data.cachedWeather
+    else
+        SetEvent("underground_time", get_time_elapsed())
+    end
+
+    return weather_manager_load(self, m_data)
+end
+
+local weather_manager_save = level_weathers.WeatherManager.save_state
+level_weathers.WeatherManager.save_state = function(self, m_data)
+    weather_manager_save(self, m_data)
+    if not level_weathers.bLevelUnderground then
+        m_data.cachedWeather = level.get_weather()
+    else
+        m_data.cachedWeather = self.cachedWeather
+    end
+end

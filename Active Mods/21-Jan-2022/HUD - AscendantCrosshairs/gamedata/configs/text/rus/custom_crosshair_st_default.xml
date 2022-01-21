@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="ui_mm_lst_round">
+		<text>Патрон</text>
+	</string>
+	<string id="ui_mm_lst_enemy">
+		<text>Враг(x)</text>
+	</string>
+	<string id="ui_mm_lst_neutral">
+		<text>Нейтрал([])</text>
+	</string>
+	<string id="ui_mm_lst_friend">
+		<text>Друг(<>)</text>
+	</string>
+
+	
+</string_table>

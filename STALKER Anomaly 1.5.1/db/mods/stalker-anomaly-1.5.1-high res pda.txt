@@ -1,0 +1,6 @@
+STALKER Anomaly 1.5.1
+
+Mod name     : High Resolution Maps V1.3
+Uploader     : Bazingarrey
+Direct Link  : https://www.moddb.com/mods/stalker-anomaly/addons/high-resolution-maps
+Pre-requisite: N/A

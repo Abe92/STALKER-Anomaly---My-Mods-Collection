@@ -1,0 +1,29 @@
+[army_novice]
+primary = army_novice_primary
+
+[army_trainee]:army_novice
+primary = army_trainee_primary
+
+[army_experienced]:army_trainee
+primary = army_experienced_primary
+secondary = army_experienced_secondary
+
+[army_professional]:army_experienced
+primary = army_professional_primary
+
+[army_veteran]:army_professional
+primary = army_veteran_primary
+secondary = army_veteran_secondary
+extra = army_veteran_extra
+
+[army_expert]:army_veteran
+primary = army_expert_primary
+
+[army_master]:army_expert
+primary = army_master_primary
+secondary = army_master_secondary
+
+[army_legend]:army_master
+primary = army_legend_primary
+
+#include "loadout_*.ltx"

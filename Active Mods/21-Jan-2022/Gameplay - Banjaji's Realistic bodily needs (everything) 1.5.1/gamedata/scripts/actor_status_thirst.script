@@ -1,0 +1,447 @@
+-- Changed for IMM	by Faustle (2018)
+-- Edited by Tronex
+-- 2018/2/18 - modified indicator icon to show properly and work with HUD toggle
+-- 2018/11/7 - modified values for Anomaly
+-- Water deprivation
+
+-- 2022.01.09
+-- Banjaji's Realistic bodily needs
+-- * Increased starting effects from gray to yellow indicator.
+-- * Changed values to match real life intake including water from foods
+-- (6 l/day with excercise: https://doi.org/10.1111/j.1753-4887.2010.00304.x, 
+-- https://doi.org/10.1111/j.1753-4887.2005.tb00152.x) 
+-- and scaled it to original 0...10000 scale for backwards compatibility.
+-- * Added certain death at 10000 units
+-- * Added exponential damage model. You start taking damage from red indicator. 
+-- Before you would always die few days before you'd actually die from thirst.
+-- * Added hallucinations when at red indicator
+-- * Water loss during sleep is smaller: 42 g/h (https://doi.org/10.1111/j.1753-4887.2005.tb00152.x)
+
+-- Values:
+-- Nominal amount: 6 liters (6 kg) of water per day during excercise
+-- 8 h sleep is 186.6667 units, therefore 16 h awake is 3146.67 units and increment is 196.6667 units/h
+-- 16 h = bad feeling, 3 days(8 h/day sleep) = death
+-- 18000 g = 10000 units => 1 g = 0.55556 units
+-- 1 unit here = 1.8 g of water, 1 unit in LTX = 1 kg of water
+-- Test in Anomaly v1.5.1: real-life 1 s = in-game 6 s
+
+-- Old and different results for 1 h sleep:
+-- 60 g/h of mass loss during sleep (https://doi.org/10.1580/1080-6032(1995)006[0189:EOAFMO]2.3.CO;2)
+-- CO2 in exhaled air: 800 l/h (https://doi.org/10.1111/j.1600-0668.2009.00623.x), 4% of CO2 content, therefore 55 g/h
+-- Water loss from exhaling during sleep: 60-5-55 = 0 g/h?
+-- Total water loss during sleep: 100 g/h
+
+
+
+
+local last_drink, last_drink_chk, pwr_chk
+local feature_state
+
+--[[ Original values
+local up_drink				= 30 -- step
+local in_hour				= 600 -- amount increased every sleep hour
+local start_blur_1 			= 1440 -- value at which gray indicator appear
+local start_blur_2 			= 2880 -- value at which yellow indicator appear
+local start_blur_3 			= 4320 -- value at which orange indicator appear
+local start_blur_4 			= 5760 -- value at which red indicator appear
+local force 				= 7200 -- value at which player is forced to sleep
+local force_slp				= 10001
+
+local drink_chk				= 300 -- amount of in-game seconds where indicator value increase	
+local itn_mul 				= 0.001
+local eat_thirstiness_mul	= 1000
+local pwr_rate,rng_factor 	= -0.00010, 0.08
+local caff_max				= 3
+local die_chance 			= 5
+--]]
+
+local up_drink				= 16.3889 -- step, 196.6667 units/h
+local in_hour				= 23.333 -- amount increased every sleep hour (about 1/6 of awake)
+local start_blur_1 			= 3147 -- value at which gray indicator appears, 16 h awake
+local start_blur_2 			= 4907 -- value at which yellow indicator and effects appear, 32 h (24 h awake and 8 h asleep)
+local start_blur_3 			= 6667 -- value at which orange indicator appears, 48 h (32 h awake and 16 h asleep)
+local start_blur_4 			= 7500 -- value at which red indicator appears, 54 h (36 h awake and 18 h asleep), start of damage
+local force 				= 8333 -- value at which there's a chance player is forced to sleep and has chance to die, 60 h (40 h awake and 20 h asleep)
+local strong_effects		= 8889 -- value at which annoying effects appy, 64 h (43 h awake and 21 h asleep)
+local force_slp				= 10000 -- certain death, 72 h (48 h awake and 24 h asleep)
+local max_time				= 72	-- in-game time in h (with sleep) which corresponds to 10000 units
+
+local drink_chk				= 300 -- amount of in-game seconds where indicator value increase, 5 min	
+local itn_mul 				= 0.001
+local hallucination_chance	= 33	-- chance to spawn phantom as a hallucination when red
+local eat_thirstiness_mul	= 555.556 -- 1 unit in LTX = 1 kg of water, 18 kg of water is 10 000 units.
+-- satiety_power_v == (force_slp - start_blur_2_sleep) * pwr_rate * rng_factor_sleep + (force_slp - start_blur_2_drink) * pwr_rate * rng_factor_drink + walk_power + satiety_w
+-- satiety_power_v == pwr_rate * ((force_slp - start_blur_2_sleep) * rng_factor_sleep + (force_slp - start_blur_2_drink) * rng_factor_drink) + walk_power + satiety_w
+-- Weights: rng_factor_sleep == 0.2, rng_factor_drink == 0.8
+-- pwr_rate = (satiety_power_v - walk_power - satiety_w / ((force_slp - start_blur_2_sleep) * rng_factor_sleep + (force_slp - start_blur_2_drink) * rng_factor_drink) = 1.5e-7
+local pwr_rate,rng_factor 	= 5e-7, -1 -- values for stamina per in-game second
+local caff_max				= 3 -- some unused original variable
+local sleep_chance			= 50 -- chance to pass out when last_sleep is over force
+local die_chance 			= 10 -- chance to die when player has passed out, sleep and die is 5% chance
+
+local in_hour_const			= in_hour -- constant
+
+function create()
+	printdbg("- Water deprivation | Enabled")
+	feature_state = true
+	last_drink 				= last_drink or 0
+	RegisterScriptCallback("actor_on_update",actor_on_update)
+	RegisterScriptCallback("actor_on_item_use",actor_on_item_use)
+	RegisterScriptCallback("actor_on_sleep",actor_on_sleep)
+	actor_status.add_indicator("Thirst",{
+		index= 3,
+		typ= "state",
+		functor= {"actor_status_thirst","get_water_deprivation",true},
+		icon= "ui_inGame2_indicator_thirst",
+		background= "ui_inGame2_indicator_slot",
+		anim_icon= false,
+		anim_bk= false,
+	})
+end 
+
+function destroy()
+	printdbg("- Water deprivation | Disabled")
+	feature_state = false
+	last_drink = nil
+	UnregisterScriptCallback("actor_on_update",actor_on_update)
+	UnregisterScriptCallback("actor_on_item_use",actor_on_item_use)
+	UnregisterScriptCallback("actor_on_sleep",actor_on_sleep)
+	alife_storage_manager.get_state().drink = nil
+	actor_status.add_indicator("Thirst",nil)
+end 
+
+function toggle_feature(val)
+	if val and (not feature_state) then
+		create()
+	elseif (not val) and feature_state then
+		destroy()
+	end
+end
+
+function test_blur()
+	-- Deletes effector when gray or nothing
+	if (last_drink < start_blur_2) then
+		level.remove_pp_effector(39568)	
+	-- if atleast yellow indicator then
+	else
+		-- generate blur
+		level.add_pp_effector("yantar_underground_psi.ppe", 39568, false)	-- filename, random ID, to play endlessly
+		-- set blur strength
+		level.set_pp_effector_factor(39568, (last_drink-start_blur_2) * itn_mul) -- the ID, strength (0...1, lower or larger gets capped)
+		
+		-- Dehydrated to death
+		if (last_drink >= force_slp) then
+			actor_menu.set_msg(1, "You died of dehydration",5)
+			db.actor:kill(db.actor)
+		-- Almost dead and chance to pass out (+ chance to die)
+		elseif (not db.actor:has_info("actor_is_sleeping")==true) and (last_drink >= force) and (math.random(100) <= sleep_chance) then
+			db.actor:give_info_portion("force_slp")
+			force_sleep()
+		end
+		
+		-- endless loop of blur after 60 h
+		if last_drink >= strong_effects then
+			level.add_pp_effector("yantar_underground_psi.ppe", 40000, true) -- the other one is quite annoying on loop
+			level.set_pp_effector_factor(40000, 1)
+		else
+			level.remove_pp_effector(40000)	
+		end
+			
+		-- Chance to hallucinate if indicator is red. Chance is 2x higher after strong effects.
+		if ((last_drink >= strong_effects) and (math.random(100) <= hallucination_chance * 2)) or ((last_drink >= start_blur_4) and(math.random(100) <= hallucination_chance)) then
+			hallucinate(3)
+		end
+	end
+end
+
+-- Spawn hallucinations (phantoms)
+function hallucinate(max_hallucinations)
+	local phantom_sections = {"m_phantom_bloodsucker", "m_phantom_tushkano", "m_phantom_controller", "m_phantom_zombi", "m_phantom_snork", 
+						"m_phantom_boar", "m_phantom_flesh", "m_phantom_dog", "m_phantom_pseudodog", "m_phantom_cat", "m_phantom_chimera", "m_phantom_gigant"}
+	-- 1 to max_hallucinations hallucinations
+	for i = 1, math.random(max_hallucinations) do
+		local section = phantom_sections[math.random(12)] -- picks one out of 12 phantoms
+		local location = vector() -- Generate empty data type
+		location.x = db.actor:position().x + math.random(-5,5)
+		location.y = db.actor:position().y + math.random(-0.5,4)	-- this is height
+		location.z = db.actor:position().z + math.random(-5,5)
+		phantom_manager.spawn_dynamic_phantom(section,location,db.actor:level_vertex_id())
+	end
+end
+
+function force_sleep()
+	ui_sleep_dialog.sleep_forced()
+	if math.random(100) <= die_chance then
+		actor_menu.set_msg(1, game.translate_string("st_death_thirst"),5)
+		db.actor:kill(db.actor)
+	end
+	disable_info("force_slp")
+end
+
+function get_water_deprivation(visual)
+	if (not last_drink) then
+		return 0
+	end
+	
+	if visual then -- indicator
+		if last_drink <= start_blur_1 then return 0
+		elseif last_drink <= start_blur_2 then return 1
+		elseif last_drink <= start_blur_3 then return 2
+		elseif last_drink <= start_blur_4 then return 3
+		else return 4
+		end
+	end
+	return clamp( normalize(last_drink, 0, force_slp) , 0 , 1)
+end
+
+
+-- Banjaji's damage map. It maps dealt damage as an exponential function.
+-- from 50 h to 58 h (integration) player loses 1% of healt, from 58 to 62 h an additional
+-- 21%, from 62 to 64 h additional 76% etc.    
+function get_damage(passed_time)
+	return 1.997e-25 * math.exp(0.000210 * passed_time)
+end
+
+-------------------------------------------------------------------
+-- Callbacks
+-------------------------------------------------------------------
+function save_state(m_data)
+	if (USE_MARSHAL) and feature_state then
+		local drink = {}
+		drink.last_drink = last_drink
+		drink.chk_drink = last_drink_chk and utils_data.CTime_to_table(last_drink_chk)
+		
+		m_data.drink = drink
+		printdbg("# SAVING: Water deprivation | last_drink: %s", tostring(last_drink))
+	end
+end
+
+function load_state(m_data)
+	local drink = m_data.drink
+	if drink then
+		last_drink = drink.last_drink or 0
+		last_drink_chk = drink.chk_drink and utils_data.CTime_from_table(drink.chk_drink) or nil
+		printdbg("# LOADING: Water deprivation | last_drink: %s", tostring(last_drink))
+	end
+end
+
+function actor_on_sleep(hours)
+	-- if god mode console command is enabled nothing happens
+	if (get_console_cmd(1,"g_god")) then
+		return
+	end
+
+	if (not db.actor:has_info("force_slp")) then
+		--printdbg("/ Water deprivation | Increased thirst by sleeping: %s - old thirst level: %s", hours*in_hour, last_drink)
+		last_drink = last_drink and math.ceil(last_drink + hours*(in_hour or in_hour_const)) or 0
+		if (last_drink < 0) then
+			last_drink = 0
+		elseif (last_drink > force_slp) then
+			last_drink = force_slp
+		end
+	end
+end
+
+function actor_on_item_use(item)
+	-- if god mode console command is enabled nothing happens
+	if (get_console_cmd(1,"g_god")) then
+		return
+	end
+
+	local sec = item:section()
+	local eat_thirstiness = (ini_sys:r_float_ex(sec,"eat_thirstiness") or 0) * eat_thirstiness_mul 
+	
+	if eat_thirstiness and eat_thirstiness ~= 0 then
+		--printdbg("/ Thirst deprivation | Item used: %s - old thirst level: %s - thirst level change: %s", sec, last_drink, eat_thirstiness)
+		last_drink = last_drink + eat_thirstiness
+		if (last_drink < 0) then
+			last_drink = 0
+		elseif (last_drink > force_slp) then
+			last_drink = force_slp
+		end
+		
+		test_blur()
+	end
+end
+
+function actor_on_update(b,d)
+	--printf("last_drink_chk=%s last_drink=%s",last_drink_chk and game.get_game_time():diffSec(last_drink_chk) or "nil",last_drink)
+	
+	-- if god mode console command is enabled nothing happens
+	if (get_console_cmd(1,"g_god")) then
+		return
+	end
+	
+	local curr_time = game.get_game_time()	 -- C# class (or equivalent) from engine, not a number
+	
+	if last_drink > start_blur_2 then
+		local tg = time_global()	-- updates 1000 times per second
+		if (pwr_chk == nil or tg > pwr_chk) then 
+			if (db.actor.power > 0) then
+			--printdbg("Thirst: "..tostring(pwr_rate * (last_drink - force_slp / 3) * rng_factor / 10*6))
+				db.actor:change_power(pwr_rate * (last_drink - force_slp / 3) * rng_factor / 10*6) -- / 10 because 10x per second  but * 6 to convert to in-game second 
+				--db.actor:change_health(pwr_rate*((last_drink-start_blur_1)*rng_factor)/100)
+				db.actor:change_health(get_damage(last_drink))
+			end
+			pwr_chk = tg+100 -- about 10x per real life second
+		end
+	end
+	
+	if (last_drink_chk and curr_time:diffSec(last_drink_chk) < drink_chk) then 
+		return 
+	end
+	
+	last_drink_chk = curr_time
+	
+	last_drink = last_drink + up_drink
+	
+	if (last_drink < 0) then
+		last_drink = 0
+	elseif (last_drink > force_slp) then
+		last_drink = force_slp
+	end
+	
+	test_blur()
+end
+
+function on_game_start()
+	local function on_game_load()
+		if game_difficulties.get_game_factor("thirst") then
+			create()
+		end
+	end
+	--RegisterScriptCallback("on_game_load",on_game_load)
+	RegisterScriptCallback("load_state",load_state)
+	RegisterScriptCallback("save_state",save_state)
+end
+
+
+-- Functions to read/write constants from another script
+function get_last_drink()
+	return last_drink or 0
+end
+function get_up_drink()
+	return up_drink or 0
+end
+function get_in_hour()
+	return in_hour or 0
+end
+function get_start_blur_1()
+	return start_blur_1 or 0
+end
+function get_start_blur_2()
+	return start_blur_2 or 0
+end
+function get_start_blur_3()
+	return start_blur_3 or 0
+end
+function get_start_blur_4()
+	return start_blur_4 or 0
+end
+function get_force()
+	return force or 0
+end
+function get_strong_effects()
+	return strong_effects or 0
+end
+function get_force_slp()
+	return force_slp or 0
+end
+function get_max_time()
+	return max_time or 0
+end
+function get_drink_chk()
+	return drink_chk or 0
+end
+function get_itn_mul()
+	return itn_mul or 0
+end
+function get_hallucination_chance()
+	return hallucination_chance or 0
+end
+function get_eat_thirstiness_mul()
+	return eat_thirstiness_mul or 0
+end
+function get_pwr_rate()
+	return pwr_rate or 0
+end
+function get_sleep_chance()
+	return sleep_chance or 0
+end
+function get_die_chance()
+	return die_chance or 0
+end
+
+function set_last_drink(x)
+	last_drink = x
+end
+function set_up_drink(x)
+	up_drink = x
+end
+function set_in_hour(x)
+	in_hour = x
+end
+function set_start_blur_1(x)
+	start_blur_1 = x
+end
+function set_start_blur_2(x)
+	start_blur_2 = x
+end
+function set_start_blur_3(x)
+	start_blur_3 = x
+end
+function set_start_blur_4(x)
+	start_blur_4 = x
+end
+function set_force(x)
+	force = x
+end
+function set_strong_effects(x)
+	strong_effects = x
+end
+function set_force_slp(x)
+	force_slp = x
+end
+function set_max_time(x)
+	max_time = x
+end
+function set_drink_chk(x)
+	drink_chk = x
+end
+function set_itn_mul(x)
+	itn_mul = x
+end
+function set_hallucination_chance(x)
+	hallucination_chance = x
+end
+function set_eat_thirstiness_mul(x)
+	eat_thirstiness_mul = x
+end
+function set_pwr_rate(x)
+	pwr_rate = x
+end
+function set_sleep_chance(x)
+	sleep_chance = x
+end
+function set_die_chance(x)
+	die_chance = x
+end
+
+
+
+--  Bvcx's "Hunger, thirst, sleepiness bars" functions
+function get_thirst_blur_4()
+	return start_blur_4 or 0
+end
+
+
+-- HyperionSTG's Exact satiety, hydratation and sleepiness status, Banjaji's patch
+-- Shows hydration in item_device.script
+local to_mililiter_coeficient = 0.001 -- 1 unit in LTX is 1000 ml, left for compatibility
+function get_ml_to_full_hydratation()
+	return convert_to_ml_eq(last_drink / eat_thirstiness_mul)
+end
+-- Shows food hydration from ui_item.script
+function convert_to_ml_eq(amount)
+  return  string.format( "%.0f", amount / to_mililiter_coeficient) 
+end

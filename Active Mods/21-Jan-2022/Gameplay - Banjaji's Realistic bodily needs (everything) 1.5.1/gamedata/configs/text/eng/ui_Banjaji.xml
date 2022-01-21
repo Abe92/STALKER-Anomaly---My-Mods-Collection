@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<string_table>
+	<string id="st_death_starvation">
+		<text>Starved to death</text>
+	</string>
+	<string id="st_death_thirst">
+		<text>Dehydrated to death</text>
+	</string>
+	
+</string_table>

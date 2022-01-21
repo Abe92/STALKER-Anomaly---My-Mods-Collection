@@ -1,0 +1,218 @@
+local enable_debug = false
+function print_dbg(txt, ...)
+    if enable_debug then 
+        printf(txt, ...)
+    end
+end
+
+function on_belt(camelbak)
+    local found = false
+    db.actor:iterate_belt(
+            function (owner, obj)
+                -- printf("checking object id %s, section %s", obj:id(), obj:section())
+                if obj:id() == camelbak:id() then
+                    -- printf("found it")
+                    found =  true
+				end
+			end
+        )
+    return found
+end
+
+local water_table = {
+    ["mineral_water"] = 30,
+    ["flask"] = 20
+}
+local MIN = 0.0001
+local MAX = 0.999
+
+function sip(camelbak, large)
+    local section = large and "camelbak_chug" or "camelbak_sip"
+
+    local id = camelbak:id()
+    local camelbak_drain = SYS_GetParam(2, section, "cap_drain")
+    cond = clamp(camelbak_cond[id] - camelbak_drain, 0, 100)
+    camelbak_cond[id] = cond
+    if cond == 0 and camelbak:condition() > MIN then
+        camelbak:set_condition(MIN)
+    elseif cond > 0 and camelbak:condition() < MAX then
+        camelbak:set_condition(MAX)
+    end
+    -- printf("actor drink")
+    if arti_slot_control_mcm.get_config("camelbakMessage") then
+        -- printf("actor notify drink")
+        news_manager.send_tip(db.actor, game.translate_string("st_camelbak_drink"), nil, "swiss_knife", 6000)
+    end
+
+    local se_item = alife_create_item(section, db.actor)
+    print_dbg("Created item %s", section)
+    CreateTimeEvent(0, "sip", 0.01, timer_sip, section)
+    -- db.actor:eat(db.actor:object(section))
+    -- reset 
+    camelbak_last_sip = game.get_game_time()
+
+end
+
+function timer_sip(section)
+	db.actor:eat(db.actor:object(section))
+	return true
+end
+
+function try_drink(obj)
+    local id = obj:id()
+    if (camelbak_cond[id] and camelbak_cond[id] > 0) then
+        return game.translate_string("st_camelbak_trydrink")
+    end
+end
+
+function drink(obj)
+    sip(obj, true)
+end
+
+function on_item_drag_dropped(obj_1, obj_2, slot_from, slot_to)
+    
+	local water = obj_1
+    local camelbak = obj_2
+    local id = camelbak:id()
+    
+    local water_sec = obj_1:section()
+    if water_table[water_sec] == nil or not string.find(camelbak:section(), "af_camelbak") then
+        return
+    end
+
+    if not camelbak_cond[id] or camelbak_cond[id] < 100 then
+        local current_capacity = camelbak_cond[id] and camelbak_cond[id] or 0
+        camelbak_cond[id] = clamp(current_capacity + water_table[water_sec], 0, 100)
+        utils_item.discharge(water)
+        if camelbak:condition() < MAX then
+            camelbak:set_condition(MAX)
+        end
+        news_manager.send_tip(db.actor, game.translate_string("st_camelbak_fill"), nil, "swiss_knife", 6000)
+    else
+        news_manager.send_tip(db.actor, game.translate_string("st_camelbak_full"), nil, "swiss_knife", 6000)
+    end
+
+end
+
+-- monkey patch descriptor
+BuildHeader = ui_item.build_desc_header  -- obj needed
+function ui_item.build_desc_header(obj, sec, str)
+	str = str or gc(ini_sys:r_string_ex(sec,"description"))
+	if (not str) then return "" end
+	
+	local _str = ""
+    if string.find(obj:section(), "af_camelbak") then
+        local con = camelbak_cond[obj:id()] and math.floor(camelbak_cond[obj:id()]) or 0
+        local clr = utils_xml.get_color_con(con)
+        _str = clr .. " � " .. utils_xml.get_color("ui_gray_1") .. game.translate_string("st_camelbak_capacity") .. ": " .. clr .. tostring(con)  .. "%" .. "\\n \\n" .. utils_xml.get_color("ui_gray_1")   
+        return _str .. str
+    else
+        return BuildHeader(obj, sec, str)
+    end
+end
+
+camelbak_cond = {}
+-- class
+function bind(obj)
+    -- printf("bound object "..obj:section())
+    obj:bind_object(camelbak_binder(obj))
+end
+local drink_chk = 600
+local camelbak_last_sip
+
+class "camelbak_binder" (object_binder)
+
+function camelbak_binder:__init(obj) super(obj)
+	self.first_update = nil
+end
+
+-- camelbak handling
+-- assume 1.5 liter camelbak, 0.3 l water restores 3000 thirst, full camelbak can restore 15000 thirst
+-- every 10m drains 60 thirst, restore the same amount every 10 in game minutes
+-- camelbak will last for about 24 hours at full capacity, i guess stalkers are camels
+function camelbak_binder:update(delta)
+    object_binder.update(self, delta)
+	local obj = self.object
+	local id = obj:id()
+    local curr_time = game.get_game_time()
+
+    if not self.first_update then
+        self.first_update = true
+        camelbak_last_sip = curr_time
+        if not camelbak_cond[id] then
+            -- first time initialization
+            camelbak_cond[id] = 100
+        elseif camelbak_cond[id] == 0 then
+            -- no water, no bonuses (or penalties)
+            obj:set_condition(MIN)
+        else
+            obj:set_condition(MAX)
+		end
+    end
+    
+    if (get_console_cmd(1,"g_god")) or not on_belt(obj) then
+		return
+    end
+
+    -- printf("Checking time %s against current time %s", utils_data.CTimeToSec(last_drink_chk), utils_data.CTimeToSec(curr_time))
+    if (camelbak_last_sip and curr_time:diffSec(camelbak_last_sip) < drink_chk) then
+        -- printf("Time difference is "..curr_time:diffSec(last_drink_chk))
+		return 
+    end
+    camelbak_last_sip = curr_time
+	print_dbg("Camelbak capacity: "..camelbak_cond[id])
+    if camelbak_cond[id] > 0 then
+        sip(obj, false)
+    end
+    return
+end
+function camelbak_binder:reload(section)
+    object_binder.reload(self, section)
+end
+
+function camelbak_binder:reinit()
+    object_binder.reinit(self)
+end
+
+function camelbak_binder:net_spawn(se_abstract)
+    if not(object_binder.net_spawn(self, se_abstract)) then
+        return false
+    end
+    return true
+end
+
+function camelbak_binder:net_destroy()
+	--print_dbg("[%s] destroyed: %s", self.object:name())
+	object_binder.net_destroy(self)
+end
+
+function camelbak_binder:save(stpk)
+end
+
+function camelbak_binder:load(stpk)
+end
+
+local function save_state(mdata) 
+	mdata.camelbak_cond = camelbak_cond
+end
+
+local function load_state(mdata) 
+	camelbak_cond = mdata.camelbak_cond or {}
+end
+
+local function se_device_on_unregister(se_obj, typ)
+	--local sec = se_obj:section_name()
+	--if ini_sys:r_string_ex(sec,"script_binding") == "item_device.bind" then
+		local id = se_obj.id
+		camelbak_cond[id] = nil
+	--end
+end
+
+function on_game_start()
+	if (USE_MARSHAL) then 
+		RegisterScriptCallback("save_state",save_state)
+		RegisterScriptCallback("load_state",load_state)
+	end
+    RegisterScriptCallback("ActorMenu_on_item_drag_drop",on_item_drag_dropped)
+	RegisterScriptCallback("server_entity_on_unregister",se_device_on_unregister)
+end

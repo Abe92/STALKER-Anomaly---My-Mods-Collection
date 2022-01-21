@@ -1,0 +1,6 @@
+STALKER Anomaly 1.5.1
+
+Mod Name     : Classic Textures V0.4 [1.5.1]
+Uploader     : enixgamer
+Direct Link  : https://www.moddb.com/mods/stalker-anomaly/addons/classic-textures-151
+Pre-requisite: N/A

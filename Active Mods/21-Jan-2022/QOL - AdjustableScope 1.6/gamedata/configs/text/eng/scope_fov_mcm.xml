@@ -1,0 +1,44 @@
+<!-- 
+	Anomaly Modconfiguration Menu strings
+	
+-->
+
+<string_table>
+
+
+	<string id="ui_mcm_scop_title">
+		<text>Scope HUD Settings</text>
+	</string>	
+	<string id="ui_mcm_menu_scop">
+		<text>Adjust scope HUD</text>
+	</string>
+
+	<string id="ui_mcm_scop_iron_fov">
+		<text>Ironsights and Integrated 3D sights</text>
+	</string>
+	<string id="ui_mcm_scop_iron_fov_desc">
+		<text>lower values brings the scope closer when you're using ironsights and integrated 3D sights</text>
+	</string>
+
+	<string id="ui_mcm_scop_scope_fov">
+		<text>3D scopes</text>
+	</string>
+	<string id="ui_mcm_scop_scope_fov_desc">
+		<text>lower values brings the scope closer when you're using 3D scopes</text>
+	</string>
+
+	<string id="ui_mcm_scop_bad_scope_fov">
+		<text>Bad 3D optical scopes</text>
+	</string>
+	<string id="ui_mcm_scop_bad_scope_fov_desc">
+		<text>Due to technical limitations, certain scopes like the ACOG, Susat has to be put further away by default in order to look normal. This setting is for those</text>
+	</string>
+
+	<string id="ui_mcm_scop_grenade_fov">
+		<text>Grenade Launcher</text>
+	</string>
+	<string id="ui_mcm_scop_grenade_fov_desc">
+		<text>lower values brings the scope closer when you're using attached grenade launchers</text>
+	</string>
+
+</string_table>

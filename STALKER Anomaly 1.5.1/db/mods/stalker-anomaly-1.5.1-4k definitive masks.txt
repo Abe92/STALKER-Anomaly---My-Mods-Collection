@@ -1,0 +1,9 @@
+STALKER Anomaly 1.5.1
+
+Mod name     : NAV's 4K DEFINITIVE MASKS V2.3 (DISTORTION FIX) (1.5.1)
+Uploader     : navjotski
+Direct Link  : https://www.moddb.com/mods/stalker-anomaly/addons/navs-4k-definitive-masks-10
+Pre-requisite: 
+
+(1) [2.1.0] GROK's MASKS AND REFLECTIONS FOR 1.5.1
+    Direct Link: https://www.moddb.com/mods/stalker-anomaly/addons/groks-4k-and-reflections-for-navs-mask-v12

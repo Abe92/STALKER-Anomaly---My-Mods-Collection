@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="windows-1251"?>
+
+<!-- 
+	Anomaly Modconfiguration Menu strings
+	
+-->
+
+<string_table>
+
+
+	<string id="ui_mcm_scop_title">
+		<text>Настройки Scope HUD</text>
+	</string>	
+	<string id="ui_mcm_menu_scop">
+		<text>Настроить прицел HUD</text>
+	</string>
+
+	<string id="ui_mcm_scop_iron_fov">
+		<text>Прицелы и встроенные 3D-прицелы</text>
+	</string>
+	<string id="ui_mcm_scop_iron_fov_desc">
+		<text>более низкие значения приближают прицел при использовании металлических прицелов и встроенных трехмерных прицелов</text>
+	</string>
+
+	<string id="ui_mcm_scop_scope_fov">
+		<text>3D прицелы</text>
+	</string>
+	<string id="ui_mcm_scop_scope_fov_desc">
+		<text>более низкие значения приближают прицел при использовании 3D-прицелов</text>
+	</string>
+
+	<string id="ui_mcm_scop_bad_scope_fov">
+		<text>Плохие 3D оптические прицелы</text>
+	</string>
+	<string id="ui_mcm_scop_bad_scope_fov_desc">
+		<text>Из-за технических ограничений некоторые прицелы, такие как ACOG, Susat по умолчанию должны располагаться дальше, чтобы они выглядели нормально. Этот параметр предназначен для тех, кто</text>
+	</string>
+
+	<string id="ui_mcm_scop_grenade_fov">
+		<text>Гранатомет</text>
+	</string>
+	<string id="ui_mcm_scop_grenade_fov_desc">
+		<text>более низкие значения приближают прицел при использовании присоединенного гранатомета</text>
+	</string>
+
+</string_table>

@@ -1,0 +1,25 @@
+-- If you don't use MCM, change your defaults from here.
+local defaults = {
+    ["camelbakMessage"] = true,
+    ["ballisticMessage"] = true
+}
+
+function get_config(key)
+    if ui_mcm then
+        -- printf("MCM loaded")
+        return ui_mcm.get("slotControl/"..key)
+    else return defaults[key]
+    end
+    -- return ui_mcm and ui_mcm.get("slotControl/"..key) or defaults[key]
+end
+
+function on_mcm_load()
+    op = { id= "slotControl",sh=true ,gr={
+            { id= "title",type= "slide",link= "ui_options_slider_player",text="ui_mcm_slotControl_title",size= {512,50},spacing= 20 },
+            {id = "camelbakMessage", type = "check", val = 1, def = true},
+            {id = "ballisticMessage", type = "check", val = 1, def=true},
+        }
+    }
+        
+    return op
+end

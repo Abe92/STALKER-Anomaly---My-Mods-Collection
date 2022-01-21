@@ -1,0 +1,29 @@
+[dolg_novice]
+primary = duty_novice_primary
+; secondary = duty_experienced_secondary
+
+[dolg_trainee]:dolg_novice
+primary = duty_trainee_primary
+
+[dolg_experienced]:dolg_trainee
+primary = duty_experienced_primary
+secondary = duty_experienced_secondary
+
+[dolg_professional]:dolg_experienced
+primary = duty_professional_primary
+
+[dolg_veteran]:dolg_professional
+primary = duty_veteran_primary
+secondary = duty_veteran_secondary
+
+[dolg_expert]:dolg_veteran
+primary = duty_expert_primary
+
+[dolg_master]:dolg_expert
+primary = duty_master_primary
+secondary = duty_master_secondary
+
+[dolg_legend]:dolg_master
+primary = duty_legend_primary
+
+#include "loadout_*.ltx"

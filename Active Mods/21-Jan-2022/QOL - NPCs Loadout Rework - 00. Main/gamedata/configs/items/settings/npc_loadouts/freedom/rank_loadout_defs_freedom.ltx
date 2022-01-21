@@ -1,0 +1,29 @@
+[freedom_novice]
+primary = freedom_novice_primary
+;secondary = freedom_experienced_secondary
+
+[freedom_trainee]:freedom_novice
+primary = freedom_trainee_primary
+
+[freedom_experienced]:freedom_trainee
+primary = freedom_experienced_primary
+secondary = freedom_experienced_secondary
+
+[freedom_professional]:freedom_experienced
+primary = freedom_professional_primary
+
+[freedom_veteran]:freedom_professional
+primary = freedom_veteran_primary
+secondary = freedom_veteran_secondary
+
+[freedom_expert]:freedom_veteran
+primary = freedom_expert_primary
+
+[freedom_master]:freedom_expert
+primary = freedom_master_primary
+secondary = freedom_master_secondary
+
+[freedom_legend]:freedom_master
+primary = freedom_legend_primary
+
+#include "loadout_*.ltx"

@@ -1,0 +1,45 @@
+<string_table>
+
+
+	<string id="ui_mm_lst_dot">
+		<text>Dot</text>
+	</string>
+	
+	<string id="ui_mm_lst_classic">
+		<text>Classic</text>
+	</string>
+
+	<string id="ui_mm_lst_classic2">
+		<text>Classic (Bars Only)</text>
+	</string>
+
+	<string id="ui_mm_lst_circle">
+		<text>Circle</text>
+	</string>
+	
+	<string id="ui_mm_lst_bullseye">
+		<text>Bullseye</text>
+	</string>
+	
+	<string id="ui_mm_lst_cross">
+		<text>Cross</text>
+	</string>
+	
+	<string id="ui_mm_lst_round">
+		<text>Round</text>
+	</string>
+	
+	<string id="ui_mm_lst_enemy">
+		<text>Enemy (Cross)</text>
+	</string>
+	
+	<string id="ui_mm_lst_neutral">
+		<text>Neutral (Square)</text>
+	</string>
+	
+	<string id="ui_mm_lst_friend">
+		<text>Friend (Diamond)</text>
+	</string>
+
+
+</string_table>

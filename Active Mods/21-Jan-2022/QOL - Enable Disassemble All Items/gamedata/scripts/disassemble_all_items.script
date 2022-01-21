@@ -1,0 +1,151 @@
+local AC_ID = AC_ID
+local alife_release = alife_release
+local CreateTimeEvent = CreateTimeEvent
+local empty_table = empty_table
+local ipairs = ipairs
+local IsInvbox = IsInvbox
+local IsStalker = IsStalker
+local IsWeapon = IsWeapon
+local pairs = pairs
+local SYS_GetParam = SYS_GetParam
+
+local add_functor = custom_functor_autoinject.add_functor
+local remove_functor = custom_functor_autoinject.remove_functor
+
+-- use6_functor         		= item_parts.menu_disassembly
+-- use6_action_functor  		= item_parts.func_disassembly
+-- use6_modes         			= inventory, loot
+-- use6_containers  			= actor_bag, actor_equ, actor_belt, npc_bag
+
+local d_flag      = false
+local d_key       = "DIK_LMENU" -- Saftey key hold (Left Alt)
+
+local function on_key_press(key)
+	if (key == DIK_keys[d_key]) then
+		d_flag = true
+	end
+end
+
+local function on_key_release(key)
+	if (key == DIK_keys[d_key]) then
+		d_flag = false
+	end
+end
+
+local remover_func = {
+	check = function(obj, bag, mode)
+		local modes = {
+			["inventory"] = true,
+			["loot"] = true,
+		}
+		local bags = {
+			["actor_bag"] = true,
+			["npc_bag"] = true,
+		}
+		local check = item_parts.menu_disassembly
+
+		return check(obj) and modes[mode] and bags[bag]
+	end,
+	str = function(obj, bag, mode)
+		return "st_dai_disassemble_all"
+	end,
+	func = function(obj, bag, mode)
+		local get_suitable_dtool = item_parts.get_suitable_dtool
+		local is_suitable_dtool = item_parts.is_suitable_dtool
+
+		local obj_d = get_suitable_dtool(obj)
+		if (not is_suitable_dtool(obj, obj_d)) then
+			if IsWeapon(obj) then
+				actor_menu.set_item_news('fail', 'weapon', "st_dis_text_3", " ")
+			else
+				news_manager.send_tip(db.actor, game.translate_string("st_news_dis_items"), nil, "swiss_knife", 6000)
+			end
+			return
+		end
+
+		-- Warning message on safe keybind
+		local chk = ui_options.get("control/general/disassembly_warning")
+		if chk and (not d_flag) then
+			actor_menu.set_item_news("success", "detail", "st_awr_ctrl")
+			return
+		end
+
+		local actor = obj:parent()
+		local sec = obj:section()
+		local item_table = {}
+		local func_disassembly = item_parts.func_disassembly
+
+		local function iterate(npc, item)
+			local current_sec = item:section()
+			if not (current_sec == sec) then return end
+
+			local id = item:id()
+			item_table[id] = {
+				item = item,
+				sec = current_sec,
+				id = id
+			}
+		end
+
+		if IsStalker(actor) then
+			actor:iterate_ruck(iterate, actor)
+		elseif IsInvbox(actor) then
+			actor:iterate_inventory_box(iterate, actor)
+		else
+			printf("item parent is undefined %s, %s", actor:name(), actor:section())
+			return
+		end
+
+		local i = 0
+		local i_inc = 0.05
+		for k, v in pairs(item_table) do
+			local t = i
+			CreateTimeEvent("dai_disassemble_all" .. k, "dai_disassemble_all" .. k, t, function()
+				--printf("dissasembling item %s, id %s, time %s", v.sec, k, t)
+				func_disassembly(v.item)
+				return true
+			end)
+			i = i + i_inc
+		end
+	end
+}
+
+add_functor("dai_disassemble_all", remover_func.check, remover_func.str, nil, remover_func.func, true)
+
+-- Chance to get patch upon cutting it from outfit
+local possible_factions = {
+	["army"] = true,
+	["bandit"] = true,
+	["csky"] = true,
+	["dolg"] = true,
+	["ecolog"] = true,
+	["freedom"] = true,
+	["killer"] = true,
+	["monolith"] = true,
+	["stalker"] = true,
+	["renegade"] = true,
+	["greh"] = true,
+	["isg"] = true,
+}
+
+patch_action = gameplay_disguise.menu_patch_action
+gameplay_disguise.menu_patch_action = function(obj)
+	local section = obj:section()
+	local comm = ini_sys:r_string_ex(section,"community")
+	if comm and (comm ~= "") and possible_factions[comm] then
+		local id = obj:id()
+		local state = se_load_var(id, obj:name(), "unpatched")
+		if state == nil and math.random(100) <= 50 then
+			local patch_sec = gameplay_disguise.get_patch(comm,true)
+			local str_patch = ui_item.get_sec_name(patch_sec)
+			alife_create_item(patch_sec, db.actor)
+			news_manager.send_tip(db.actor, str_patch .. " x1", nil, "swiss_knife", 6000)
+		end
+	end
+	patch_action(obj)
+end
+
+function on_game_start()
+	RegisterScriptCallback("on_key_press",on_key_press)
+	RegisterScriptCallback("on_key_release",on_key_release)
+end

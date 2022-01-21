@@ -1,0 +1,111 @@
+local zoom_in_iron = 0.40
+local zoom_in_scope = 0.35
+local zoom_bad_scope = 0.2
+local gl_fov = 0.45
+local default_hud_fov = ui_options.get("video/basic/hud_fov")
+local is_mcm_open = false
+local zoomed = false
+
+ini_fov = ini_file_ex("items\\weapon_fov_values.ltx")
+
+function get_on_start()
+	zoom_in_iron = scope_fov_mcm.get_config("iron_fov")
+	zoom_in_scope = scope_fov_mcm.get_config("scope_fov")
+	zoom_bad_scope = scope_fov_mcm.get_config("bad_scope_fov")
+	default_hud_fov = ui_options.get("video/basic/hud_fov")
+	gl_fov = scope_fov_mcm.get_config("grenade_fov")
+end
+
+local function on_option_change()
+	default_hud_fov = ui_options.get("video/basic/hud_fov")
+	if is_mcm_open then
+		zoom_in_iron = scope_fov_mcm.get_config("iron_fov")
+		zoom_in_scope = scope_fov_mcm.get_config("scope_fov")
+		zoom_bad_scope = scope_fov_mcm.get_config("bad_scope_fov")
+		gl_fov = scope_fov_mcm.get_config("grenade_fov")
+		if zoomed then
+			zoom_in()
+		end
+	end
+end
+
+function zoom_in()
+zoomed = true
+local weapon = db.actor:active_item()
+local scope = utils_item.get_attached_scope(weapon)
+local parent = ini_sys:r_string_ex(weapon:section(),"parent_section") or weapon:section()
+local not_pistol = not (ini_sys:r_line_ex(weapon:section(),"kind") == "w_pistol")
+
+local two_dim = weapon and ini_sys:r_float_ex(weapon:section(),"scope_status") == 1
+local sec_exist = ini_fov:section_exist(parent)
+
+if (db.actor:active_detector()) then return end
+
+	if weapon and weapon:weapon_in_grenade_mode() then
+		exec_console_cmd("hud_fov " .. gl_fov)
+		return
+	end
+local iron_fov = ini_fov:r_float_ex(parent, "iron")
+	if sec_exist and scope then
+	local custom_fov = ini_fov:r_float_ex(parent, scope)
+		if scope and custom_fov then
+			exec_console_cmd("hud_fov " .. custom_fov)
+			return
+		end
+	end
+	if sec_exist and (not scope) and iron_fov then
+		exec_console_cmd("hud_fov " .. iron_fov)
+		return
+	end
+	if scope and not_pistol then
+		local scope_bad = ini_fov:r_bool_ex("bad_scopes", scope)
+		if scope_bad and (not two_dim) then
+			exec_console_cmd("hud_fov " .. zoom_bad_scope)
+		else exec_console_cmd("hud_fov " .. zoom_in_scope)
+		end
+	end
+	if (not scope) or (not not_pistol) then
+	exec_console_cmd("hud_fov " .. zoom_in_iron)
+	end
+end
+
+local function zoom_out()
+	exec_console_cmd("hud_fov " .. default_hud_fov)
+	zoomed = false
+end
+
+local function GUI_on_show(name)
+	if name == "UIMCM" then
+		is_mcm_open = true
+	end
+end
+
+local function GUI_on_hide(namee)
+	if namee == "UIMCM" then
+		is_mcm_open = true
+	end
+end
+
+local function on_key_release(key)
+	if key == bind_to_dik(key_bindings.kWPN_FUNC) and zoomed then
+		local weapon = db.actor:active_item()
+		if not weapon then return end
+		if weapon:weapon_in_grenade_mode() then
+			exec_console_cmd("hud_fov " .. gl_fov)
+			return
+		else zoom_in()
+		end
+	end
+end
+
+function on_game_start()
+	RegisterScriptCallback("GUI_on_hide", GUI_on_hide)
+	RegisterScriptCallback("GUI_on_show", GUI_on_show)
+	RegisterScriptCallback("actor_on_weapon_zoom_in", zoom_in)
+	RegisterScriptCallback("actor_on_weapon_zoom_out", zoom_out)
+	RegisterScriptCallback("on_option_change", on_option_change)
+	RegisterScriptCallback("on_key_release", on_key_release)
+	RegisterScriptCallback("actor_on_net_destroy", zoom_out)
+	RegisterScriptCallback("actor_on_before_death", zoom_out)
+	get_on_start()
+end

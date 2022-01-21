@@ -1,0 +1,34 @@
+[greh_novice]
+primary = greh_novice_primary
+secondary = greh_novice_secondary
+
+[greh_trainee]:greh_novice
+primary = greh_trainee_primary
+secondary = greh_trainee_secondary
+
+[greh_experienced]:greh_trainee
+primary = greh_experienced_primary
+secondary = greh_experienced_secondary
+
+[greh_professional]:greh_experienced
+primary = greh_professional_primary
+extra = extras_veteran
+
+[greh_veteran]:greh_professional
+primary = greh_veteran_primary
+secondary = greh_veteran_secondary
+ammo_1  =  ammo_primary_veteran
+ammo_2  =  ammo_secondary_veteran
+
+[greh_expert]:greh_veteran
+primary = greh_expert_primary
+
+[greh_master]:greh_expert
+primary = greh_master_primary
+secondary = greh_master_secondary
+
+[greh_legend]:greh_master
+primary = greh_legend_primary
+secondary = greh_legend_secondary
+
+#include "loadout_*.ltx"

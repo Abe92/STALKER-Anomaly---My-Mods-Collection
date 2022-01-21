@@ -1,0 +1,79 @@
+--Fix for properly setting "sleep_active" info portion when prevent sleeping
+ui_sleep_dialog.UISleep.TestAndShow = function(self, force)
+	if (force ~= true) then
+		local bleeding = db.actor.bleeding > 0
+		local radiation = db.actor.radiation > 0
+		
+		-- Prevent sleep if bleeding and/or iradiated.
+		if (bleeding or radiation) then
+			if (bleeding and radiation) then
+				actor_menu.set_msg(1, game.translate_string("st_sleep_bleeding_irradiated"),5)
+			elseif (bleeding) then
+				actor_menu.set_msg(1, game.translate_string("st_sleep_bleeding"),4)
+			elseif (radiation) then
+				actor_menu.set_msg(1, game.translate_string("st_sleep_irradiated"),4)
+			end
+			disable_info("sleep_active")
+			return
+		end
+		
+		-- Check if actor is inside a safe zone
+		local actor_hide = GetEvent("current_safe_cover") and true or false
+
+		-- Check if actor is inside a tent
+		if (not actor_hide) then
+			actor_hide = item_tent.get_nearby_tent(1.5)
+		end	
+		
+		-- If all is no, dont sleep
+		if (not actor_hide) then
+			actor_menu.set_msg(1, game.translate_string("st_cant_sleep_find_shelter_mlr"),4)
+			disable_info("sleep_active")
+			return
+		end
+	end
+
+	self:Initialize()
+	self:ShowDialog(true)
+	Register_UI("UISleep","ui_sleep_dialog")
+end
+
+local sleep_zones = {
+	"actor_surge_hide_2",
+	"agr_army_sleep",
+	"agr_sr_sleep_tunnel",
+	"agr_sr_sleep_wagon",
+	"bar_actor_sleep_zone",
+	"cit_merc_sleep",
+	"ds_farmhouse_sleep",
+	"esc_basement_sleep_area",
+	"esc_secret_sleep",
+	"gar_angar_sleep",
+	"gar_dolg_sleep",
+	"jup_a6_sr_sleep",
+	"mar_a3_sr_sleep",
+	"mil_freedom_sleep",
+	"mil_smart_terran_2_4_sleep",
+	"pri_a16_sr_sleep",
+	"pri_monolith_sleep",
+	"pri_room27_sleep",
+	"rad_sleep_room",
+	"ros_vagon_sleep",
+	"val_abandoned_house_sleep",
+	"val_vagon_sleep",
+	"yan_bunker_sleep_restrictor",
+	"zat_a2_sr_sleep",
+	"pol_secret_sleep"
+}
+
+local sleep = ui_sleep_dialog.sleep
+
+ui_sleep_dialog.sleep_in_zone = function(actor, npc)
+	for k,v in pairs(sleep_zones) do
+		if utils_obj.npc_in_zone(db.actor, v) then
+			give_info("sleep_active")
+			sleep()
+			break
+		end
+	end
+end

@@ -1,0 +1,111 @@
+
+local enable_debug = false
+
+function on_game_start()
+    init_storage()
+	RegisterScriptCallback("actor_item_to_belt", set_on_slot)
+	RegisterScriptCallback("actor_item_to_slot", check_exo)
+end
+
+function print_dbg(txt, ...)
+    if enable_debug then 
+        printf(txt, ...)
+    end
+end
+
+local config = {}
+
+
+local config = {
+    -- ["af_kevlar"]           = 1,
+    -- ["af_plates"]           = 1,
+    -- ["af_kevlar_up"]        = 1,
+    -- ["af_plates_up"]        = 1,
+    -- ["af_camelbak"]         = 2,
+    -- ["af_camelbak_up"]      = 2,
+    -- ["af_grid"]             = 4,
+    -- ["af_frames"]           = 4,
+    -- ["af_grid_up"]          = 4,
+    -- ["af_frames_up"]        = 4,
+    -- ["af_surge"]            = 8,
+    -- ["af_cooler"]           = 8,
+    -- ["af_freon"]            = 8,
+    -- ["af_surge_up"]         = 8,
+    -- ["af_cooler_up"]        = 8,
+    -- ["af_freon_up"]         = 8
+    -- {{"hide_chimera", "hide_pseudogiant", "hide_psy_dog", "hide_pseudodog", "hide_burer", "hide_controller", "hide_bloodsucker", "hide_boar", "hide_flesh"}, 1}
+}
+
+function init_storage()
+    local ini_attachments = ini_file("items\\settings\\slot_control.ltx")
+    local n = ini_attachments:line_count("arti_slot_control")
+    for i=0,n-1 do
+        result, id, value = ini_attachments:r_line_ex("arti_slot_control",i,"","")
+        print_dbg("%s: Caching %s, %s", "slot control", id, value)
+        config[id] = value
+    end
+
+end
+
+function set_on_slot(slot_item)
+    local category = config[slot_item:section()]
+    print_dbg("attempting to slot "..slot_item:section())
+    if category then
+        local val = 0
+        print_dbg("searching for category "..category)
+
+        -- check for exoskeltal
+        local outfit = db.actor:item_in_slot(7)
+        local has_exo = false
+        if outfit and outfit:section() then
+            if SYS_GetParam(0, outfit:section(), "repair_type") == "outfit_exo" then
+                print_dbg("found exo")
+                val = val + 4
+                has_exo = true
+            end  
+        end
+
+		db.actor:iterate_belt(
+			function (owner, obj)
+                local id = obj:id()
+                local section = obj:section()
+				if id ~= slot_item:id() and config[section] and bit_and(val, config[section]) == 0 then
+                    val = val + config[obj:section()]
+                    print_dbg("found category "..config[section])
+				end
+			end
+		)
+        if bit_and(val, category) ~= 0 then
+            print_dbg("removing "..slot_item:section())
+            if has_exo and category == 4 then
+                msg = "slot_duplicate_item_exo"
+            else
+                msg = "slot_duplicate_item_"..category
+            end
+            news_manager.send_tip(db.actor, game.translate_string(msg), nil, "swiss_knife", 6000)
+            remove_item_from_slot(slot_item)
+		end
+	end
+end
+
+function check_exo(slot_item)
+    if slot_item and IsOutfit(slot_item) then
+        -- if string.find(slot_item:section(), "exo_outfit") or string.find(slot_item:section(), "nosorog") then
+        if SYS_GetParam(0, slot_item:section(), "repair_type") == "outfit_exo" then
+            db.actor:iterate_belt(
+                function (owner, obj)
+                    local id = obj:id()
+                    local section = obj:section()
+                    if id ~= slot_item:id() and config[section] and config[section] == 4 then
+                        print_dbg("check exo, found category %s, removing %s", config[section], section)
+                        remove_item_from_slot(obj)
+                    end
+                end
+            )
+        end
+    end
+end
+
+function remove_item_from_slot(slot_item)
+    db.actor:move_to_ruck(slot_item)
+end

@@ -1,0 +1,101 @@
+function on_game_start()
+    RegisterScriptCallback("npc_on_before_hit",CB_npc_on_before_hit)
+	
+end
+
+function CB_npc_on_before_hit(npc,shit,bone_id,flags)
+   
+		if (npc:has_info("npcx_is_companion")) then 
+			local npc_state = state_mgr.get_state(npc)
+			if npc_state == "wounded" or npc_state == "prisoner" or npc_state == "wounded_heavy" or npc_state == "wounded_heavy_2" or npc_state == "wounded_heavy_3" then
+				npc.bleeding = 0
+				state_mgr.get_state(npc, "wounded") 
+			end
+				-- if hit in the head/jaw/eyes
+			if (bone_id == 15 or bone_id == 16 or bone_id == 17 or bone_id == 18 or bone_id == 19) then
+				--  printf("npc health: %s", npc.health)
+				--	printf("base power: %s", shit.power)
+				-- printf("bone id: %s", bone_id)
+				-- shit.power = 0.025 * shit.power
+				-- printf("lowered power: %s", shit.power)
+				
+				-- if their health would go to 0 due to the headshot being multiplied by 4 after the hit, ignore the hit
+				-- if (npc.health - shit.power*4 <= 0.0) then
+				-- shit.power = 0.025 * shit.power
+				
+				--if shot in head bones, ignore damage and set health to critical wounded level of 0.05
+						flags.ret_value = false
+						npc.health = 0.04
+						
+					--	state_mgr.set_state(npc, "hands_up")
+					--	local npc_state = state_mgr.get_state(npc)
+						--printf("npc state: %s", npc_state)
+				
+				
+						--printf("here: %s", state_mgr.get_state(npc))
+						 --state_mgr.set_state(npc,"wounded_heavy_2")
+						-- actually we are just ignoring headshots entirely since the above if is commented out
+					-- end
+				end
+							
+			-- companions take only 30% damage from normal shots
+			-- local original_shit_power = shit.power
+			-- shit.power = 0.30 * shit.power	
+			--printf("hit on companion from enemy -  original power: %s, power: %s", original_shit_power, shit.power)
+
+			  --local npc_state = state_mgr.get_state(npc)
+			 
+			if (npc.health - shit.power <= 0.05) then
+				flags.ret_value = false
+				npc.health = 0.04
+				npc.bleeding = 0
+				
+				--printf("npc state before set state: %s", npc_state)				
+			end
+			
+			
+			local npc_state = state_mgr.get_state(npc)
+			printf("npc state: %s", npc_state)
+			if npc_state == "wounded" or npc_state == "prisoner" or npc_state == "wounded_heavy" or npc_state == "wounded_heavy_2" or npc_state == "wounded_heavy_3" then
+				flags.ret_value = false
+				npc.bleeding = 0
+				
+			elseif (npc.health - shit.power <= 0.05) then
+				flags.ret_value = false
+				npc.health = 0.04
+				wounded_states = {"wounded", "wounded_heavy", "wounded_heavy_2", "wounded_heavy_3"} 
+				--wounded_states = {"wounded_heavy", "wounded_heavy_2", "wounded_heavy_3"}
+				math.randomseed(os.time())
+				state_mgr.set_state(npc, wounded_states[math.random(0,3)])
+				npc.bleeding = 0
+				local npc_state = state_mgr.get_state(npc)
+				--printf("npc state after set state: %s", npc_state)
+			end --end state setting
+ 
+		end
+		
+			
+			-- if target isn't a companion, but the source of the hit is a companion, reduce damage to 1/3rd
+		--	if not (npc:has_info("npcx_is_companion")) then 
+		--		if (shit.draftsman:has_info("npcx_is_companion")) then
+					--local original_shit_power = shit.power
+					 --shit.power = 0.3 * shit.power
+					 -- printf("hit on enemy from companion - power: %s", shit.power)
+					-- printf("hit on enemy from companion -  original power: %s, power: %s", original_shit_power, shit.power)
+				
+		--		end
+			
+				
+			
+		--	end
+
+				
+
+end
+
+
+
+--end
+
+
+

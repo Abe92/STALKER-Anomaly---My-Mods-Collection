@@ -1,0 +1,68 @@
+;Note: Ignore distance is only checked if danger was produced by game_object.enemy with the exception of grenade and ent. corpse
+
+; danger_manager:
+; eDangerTypeGrenade 					// grenade to explode nearby
+; eDangerTypeFreshEntityCorpse 	// I see a corpse
+; eDangerTypeEntityAttacked 			// someone is hit
+; eDangerTypeAttacked					// someone is attacked
+; eDangerTypeBulletRicochet			// I perceived bullet(knife) ricochet
+; eDangerTypeEnemySound				// idk ... is_relation_enemy(obj) makes sound?
+; eDangerTypeAttackSound				// someone is shooting
+; eDangerTypeEntityDeath				// someone becomes dead
+; hit													// can't find nor trigger
+; sound												// cacophony (must be high)
+; visual												// can't find nor trigger
+
+; TODO: will change this nonsense in the next update
+
+[danger_inertion] ;May use condlists from xr_condition
+grenade 		= 40000
+entity_corpse 	= 120000
+entity_attacked = 30000
+attacked 		= 120000
+bullet_ricochet = 90000
+enemy_sound 	= 55000
+attack_sound 	= 90000
+entity_death 	= 50000
+hit				= 126000
+sound			= 40000
+visual			= 50000
+
+[danger_object] ;Ignore distances squared -- May use condlists from xr_condition
+grenade 		= 40000
+entity_corpse 	= 120000
+entity_attacked = 30000
+attacked 		= 120000
+bullet_ricochet = 90000
+enemy_sound 	= 55000
+attack_sound 	= 90000
+entity_death 	= 50000
+hit				= 126000
+sound			= 40000
+visual			= 50000
+
+[danger_inertion_actor]
+grenade 		= 40000
+entity_corpse 	= 120000
+entity_attacked = 30000
+attacked 		= 120000
+bullet_ricochet = 90000
+enemy_sound 	= 55000
+attack_sound 	= 90000
+entity_death 	= 50000
+hit				= 126000
+sound			= 40000
+visual			= 50000
+
+[danger_object_actor]
+grenade 		= 40000
+entity_corpse 	= 120000
+entity_attacked = 30000
+attacked 		= 120000
+bullet_ricochet = 90000
+enemy_sound 	= 55000
+attack_sound 	= 90000
+entity_death 	= 50000
+hit				= 126000
+sound			= 40000
+visual			= 50000

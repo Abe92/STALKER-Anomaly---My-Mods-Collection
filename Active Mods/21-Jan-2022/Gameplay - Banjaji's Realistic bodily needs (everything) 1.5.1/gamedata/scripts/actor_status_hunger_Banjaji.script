@@ -1,0 +1,83 @@
+
+--[[
+	2022.01.11
+	Banjaji's Realistic bodily needs
+	* Death when satiety reaches 0 (5 days of awake time)
+	* Hallucinations when at red (4 days of awake time)
+	
+	-- Satiety goes from 0 to 1 (5 days and 20 000 kcal)
+	-- Originally 1 unit was around 7 h and 1000 kcal.
+	-- 1 kcal is 0.00005 units
+	-- red is starving after 4 days (96 h): 0.2 units. 
+	-- orange is after 		3 days (72 h): 0.4 units
+	-- yellow is after 		2 days (48 h): 0.6 units
+	-- gray is after 		0.5 days (12 h) h: 0.9 units
+	
+	Unfortunately most hunger related variables are hardcoded on engine level (actor.ltx has few accessible variables) and
+	satiety is intertwined with many other game mechanics.
+--]]
+
+-- Checks satiety and applies penalties accordingly
+function check_and_effects()
+	local satiety = db.actor:cast_Actor():conditions():GetSatiety()
+	
+	-- Death from starvation
+	if satiety <= 0 then	-- 5 days
+		actor_menu.set_msg(1, game.translate_string("st_death_starvation"),5)
+		db.actor:kill(db.actor)
+		
+	-- hallucinations when red
+	elseif satiety <= 0.2 then -- 4 days
+		-- Increasing amount of hallucinations with hunger
+		local hallucination_amount = math.ceil((0.2 - satiety) * 100) -- (1 to 20)
+		hallucinate(hallucination_amount)
+	end
+end
+
+-- Spawn hallucinations (phantoms)
+function hallucinate(max_hallucinations)
+	-- 1 to max_hallucinations hallucinations
+	for i = 1, math.random(max_hallucinations) do
+		local section = "m_phantom_flesh"
+		local location = vector() -- Generate empty data type
+		location.x = db.actor:position().x + math.random(-5,5)
+		location.y = db.actor:position().y + math.random(-0.5,4)	-- this is height
+		location.z = db.actor:position().z + math.random(-5,5)
+		phantom_manager.spawn_dynamic_phantom(section,location,db.actor:level_vertex_id())
+	end
+end
+
+-- Callback
+local last_chk
+local chk_interval = 300 -- amount of in-game seconds between check_and_effects()
+function actor_on_update(b,d)
+	-- if god mode console command is enabled nothing happens
+	if (get_console_cmd(1,"g_god")) then
+		return
+	end
+	
+	-- Run every chk_interval
+	local curr_time = game.get_game_time() -- C# class (or equivalent) from engine, not a number
+	if (last_chk and curr_time:diffSec(last_chk) < chk_interval) then 
+		return 
+	end
+	last_chk = curr_time -- Next time (class from engine) to run check_and_effects()
+
+	-- Checks satiety and applies penalties accordingly
+	check_and_effects()	
+end
+
+-- Registers callbacks on game load
+function on_game_start()
+	RegisterScriptCallback("actor_on_update",actor_on_update)
+	--RegisterScriptCallback("actor_on_item_use",actor_on_item_use) -- Nothing is so potent that it kills instantly and can't wait for actor_on_update
+	--RegisterScriptCallback("actor_on_sleep",actor_on_sleep) -- If you can sleep for 24 h then you can wait for actor_on_update
+end
+
+-- Functions to read/write constants from another script
+function get_chk_interval()
+	return chk_interval or 0
+end
+function set_chk_interval(x)
+	chk_interval = x
+end
